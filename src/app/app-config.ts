@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
         withViewTransitions(),
         withHashLocation()
       ),
-      provideHttpClient(),     
+      provideHttpClient(),
       provideAnimations(),
       provideClientHydration(),
       {
