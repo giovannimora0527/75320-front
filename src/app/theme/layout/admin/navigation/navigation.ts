@@ -14,6 +14,7 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
+
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -36,8 +37,24 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/autores',
         icon: 'feather icon-users',
         classes: 'nav-item'
+      },
+      {
+        id: 'libros',
+        title: 'Libros',
+        type: 'item',
+        url: '/inicio/libros',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
+      {
+        id: 'prestamos',
+        title: 'Préstamos',
+        type: 'item',
+        url: '/inicio/prestamos',
+        icon: 'feather icon-handshake',
+        classes: 'nav-item'
       }
     ]
-  },
-  /* ---------- Nuevos menus aqui -------------  */
+  }
 ];
+
