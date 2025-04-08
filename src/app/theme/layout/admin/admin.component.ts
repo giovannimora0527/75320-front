@@ -16,6 +16,11 @@ import { BreadcrumbsComponent } from '../../shared/components/breadcrumbs/breadc
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
+  welcomeImageUrl: string = 'https://img.freepik.com/vector-gratis/interior-vieja-biblioteca-lujo-noche-oscura-habitacion-vacia-leer-libros-estantes-madera_107791-3025.jpg'; // URL por defecto
+
+  updateImageUrl(newUrl: string): void {
+    this.welcomeImageUrl = newUrl;
+  }
   // public props
   navCollapsed;
   navCollapsedMob: boolean;

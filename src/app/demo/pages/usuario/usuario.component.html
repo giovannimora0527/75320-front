@@ -1,13 +1,16 @@
 <div class="container">
   <div class="card">
-    <div class="card-body">
+    <div class="card-header">
       <div class="row">
         <div class="col">
-          <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal()"
-          title="Crear un usuario nuevo"  >
-          <i class="fa fa-plus"></i>&nbsp;Crear Usuario</button>
+          <button class="btn btn-outline-primary" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
         </div>
       </div>
+    </div>
+    <div class="card-body">
       <div class="row">
         <div class="col">
           <div class="card">
@@ -24,7 +27,7 @@
                       <th class="text-center">Opciones</th>
                     </tr>
                   </thead>
-                  <tbody *ngIf="usuarios.length == 0">
+                  <tbody *ngIf="usuarios.length === 0">
                     <tr>
                       <td colspan="6" class="text-center">No hay registros disponibles</td>
                     </tr>
@@ -47,8 +50,10 @@
                         {{ usuario.activo ? 'Si' : 'No' }}
                       </td>
                       <td class="text-center">
-                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario"
+                        (click)="abrirModoEdicion(usuario)">
                           <i class="fa fa-edit"></i>
+                          &nbsp;Editar
                         </button>
                       </td>
                     </tr>
@@ -63,47 +68,58 @@
   </div>
 </div>
 
-<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true"
-data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Modal crear/actualizar usuarios -->
+<div
+  class="modal fade"
+  id="crearUsuarioModal"
+  tabindex="-1"
+  aria-labelledby="crearUsuarioModalLabel" 
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearUsuarioModalLabel">{{accion}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
+            [ngModel]="usuarioSelected?.nombre"/>
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre completo es requerido.
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="nombreCompleto" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="nombreCompleto" placeholder="Ingrese el nombre completo">
-                        <div *ngIf="form.get('nombreCompleto').touched && form.get('nombreCompleto')?.hasError('required')" 
-                        class="text-danger">
-                            El nombre completo es requerido.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="correo" class="form-label">Correo</label>
-                        <input type="correo" class="form-control" id="correo" placeholder="Ingrese el correo">
-                        <div *ngIf="form.get('correo').touched && form.get('correo')?.hasError('required')" 
-                        class="text-danger">
-                            El correo es requerido.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" placeholder="Ingrese el teléfono">
-                        <div *ngIf="form.get('telefono').touched && form.get('telefono')?.hasError('required')" 
-                        class="text-danger">
-                            El telefono es requerido.
-                        </div>
-                    </div>
-                </form>
+          </div>
+        
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" 
+            [ngModel]="usuarioSelected?.correo"/>
+            <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
+              El correo es requerido.
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                (clic)="cerrarModal()">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
+            <div *ngIf="form.get('correo')?.hasError('email') && form.get('correo')?.touched" class="text-danger">
+              El formato del correo no es válido.
             </div>
-        </div>
+          </div>
+        
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
+            [ngModel]="usuarioSelected?.telefono"/>
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+              El teléfono es requerido.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">{{accion}}</button>
+      </div>
     </div>
+  </div>
 </div>
