@@ -1,11 +1,117 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Autor } from 'src/app/models/autor';
+import { AutorService } from './service/autor.service'; // asegúrate de que el path esté correcto
+import Swal from 'sweetalert2';
+
+declare const bootstrap: any;
 
 @Component({
   selector: 'app-autor',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './autor.component.html',
   styleUrl: './autor.component.scss'
 })
 export class AutorComponent {
+  autores: Autor[] = [];
+  modalInstance: any;
+  modoFormulario: string = '';
+  autorSelected: Autor;
 
+  form: FormGroup = new FormGroup({
+    nombre: new FormControl(''),
+    nacionalidad: new FormControl(''),
+    fechaNacimiento: new FormControl('')
+  });
+
+  constructor(
+    private autorService: AutorService,
+    private formBuilder: FormBuilder
+  ) {
+    this.cargarListaAutores();
+    this.cargarFormulario();
+  }
+
+  cargarFormulario() {
+    this.form = this.formBuilder.group({
+      nombre: ['', [Validators.required]],
+      nacionalidad: [''],
+      fechaNacimiento: ['']
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  cargarListaAutores() {
+    this.autorService.getAutores().subscribe({
+      next: (data) => {
+        this.autores = data;
+      },
+      error: (error) => {
+        Swal.fire('Error', error.error.message, 'error');
+      }
+    });
+  }
+
+  crearAutorModal(modoForm: string) {
+    this.modoFormulario = modoForm;
+    const modalElement = document.getElementById('crearAutorModal');
+    modalElement?.blur();
+    modalElement?.setAttribute('aria-hidden', 'false');
+    if (modalElement) {
+      if (!this.modalInstance) {
+        this.modalInstance = new bootstrap.Modal(modalElement);
+      }
+      this.modalInstance.show();
+    }
+  }
+
+  cerrarModal() {
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      nombre: "",
+      nacionalidad: "",
+      fechaNacimiento: ""
+    });
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+  }
+
+  guardarActualizarAutor() {
+    if (this.form.valid) {
+      const autor: Autor = this.form.value;
+      if (this.modoFormulario.includes('C')) {
+        this.autorService.crearAutor(autor).subscribe({
+          next: () => {
+            this.cargarListaAutores();
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Autor creado exitosamente', 'success');
+          },
+          error: (error) => {
+            Swal.fire('Error', error.error.message, 'error');
+          }
+        });
+      } else {
+        // lógica de actualización la agregamos luego
+      }
+    }
+  }
+
+  abrirModoEdicion(autor: Autor) {
+    this.crearAutorModal('E');
+    this.autorSelected = autor;
+    this.form.patchValue({
+      nombre: autor.nombre,
+      nacionalidad: autor.nacionalidad,
+      fechaNacimiento: autor.fechaNacimiento
+    });
+  }
 }
+
