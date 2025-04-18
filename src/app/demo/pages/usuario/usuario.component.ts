@@ -8,10 +8,12 @@ import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveF
 import { MessageUtils } from 'src/app/utils/message-utils';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -22,17 +24,20 @@ export class UsuarioComponent {
 
   usuarioSelected: Usuario;
   accion: string = "";
+  msjSpinner: string = "Cargando";
 
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
     correo: new FormControl(''),
-    telefono: new FormControl('')
+    telefono: new FormControl(''),
+    activo: new FormControl('')
   });
 
   constructor(
     private usuarioService: UsuarioService,
     private formBuilder: FormBuilder,
-    private messageUtils: MessageUtils
+    private messageUtils: MessageUtils,
+    private spinner: NgxSpinnerService
   ) {
     this.cargarListaUsuarios();
     this.cargarFormulario();
@@ -42,7 +47,8 @@ export class UsuarioComponent {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required]],
       correo: ['', [Validators.required]],
-      telefono: ['', [Validators.required]]
+      telefono: ['', [Validators.required]],
+      activo: ['', [Validators.required]]
     });
   }
 
@@ -51,13 +57,16 @@ export class UsuarioComponent {
   }
 
   cargarListaUsuarios() {
+    this.spinner.show();
     this.usuarioService.getUsuarios().subscribe({
       next: (data) => {
         console.log(data);
         this.usuarios = data;
+        this.spinner.hide();
       },
       error: (error) => {
         Swal.fire('Error', error.error.message, 'error');
+        this.spinner.hide();
       }
     });
   }
@@ -84,26 +93,31 @@ export class UsuarioComponent {
     this.form.reset({
       nombreCompleto: "",
       correo: "",
-      telefono: ""
+      telefono: "",
+      activo: ""
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.usuarioSelected = null;
   }
 
   abrirModoEdicion(usuario: Usuario) {
     this.usuarioSelected = usuario;
-    this.crearUsuarioModal('E');    
-    console.log(this.usuarioSelected);
+    this.form.patchValue(usuario);
+    this.crearUsuarioModal('E');  
   }
 
   guardarActualizarUsuario() {
-    console.log('Entro');
-    console.log(this.form.valid);
-    if (this.form.valid) {
-      console.log('El formualario es valido');
-      if (this.modoFormulario.includes('C')) {
-        console.log('Creamos un usuario nuevo');
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo').setValue(true);
+    }
+
+    this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario": "Actualizando usuario";
+    this.spinner.show();
+
+    if (this.form.valid) {      
+      if (this.modoFormulario.includes('C')) {        
         this.usuarioService.crearUsuario(this.form.getRawValue())
         .subscribe(
           {
@@ -120,8 +134,12 @@ export class UsuarioComponent {
              }
           }
         );
-      } else {
-        console.log('Actualizamos un usuario existente');
+      } else { 
+        // Actualizar solo los campos específicos
+        this.usuarioSelected = {
+          ...this.usuarioSelected, // Mantener los valores anteriores
+          ...this.form.getRawValue() // Sobrescribir con los valores del formulario
+        };          
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
         .subscribe(
           {
@@ -134,7 +152,7 @@ export class UsuarioComponent {
                this.form.markAsUntouched();
              },
              error: (error) => {            
-              this.messageUtils.showMessage("Error", error.error.message, "error");
+              this.messageUtils.showMessage("Error", error.error.message, "warning");
              }
           }
         );
