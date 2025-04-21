@@ -1,0 +1,30 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      
+      <button class="btn btn-outline-danger" (click)="nuevo()">Crear nuevo autor</button>
+    </div>
+    //Autor Daniel Perez ID: 885394
+    <table class="table table-striped table-bordered">
+      <thead class="table-striped">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Nacionalidad</th>
+          <th>Fecha de Nacimiento</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of autores">
+          <td>{{ a.autorId }}</td>
+          <td>{{ a.nombre }}</td>
+          <td>{{ a.nacionalidad }}</td>
+          <td>{{ a.fechaNacimiento }}</td>
+          <td>
+            <button class="btn btn-outline-danger" (click)="editar(a)">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
