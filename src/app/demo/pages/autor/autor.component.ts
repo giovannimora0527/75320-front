@@ -1,58 +1,126 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Autor } from '../../models/autor.model';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AutorService } from './service/autor.service';
+import Swal from 'sweetalert2';
+
+declare const bootstrap: any;
 
 @Component({
   selector: 'app-autor',
   templateUrl: './autor.component.html',
-  styleUrl: './autor.component.scss',
+  styleUrls: ['./autor.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe]
+  imports: [CommonModule, ReactiveFormsModule]
 })
-export class AutorComponent {
+export class AutorComponent implements OnInit {
   autores: Autor[] = [];
-  autorForm: FormGroup;
-  editingIndex: number | null = null;
+  modalInstance: any;
+  modoFormulario: string = '';
+  autorSelected: Autor | null = null;
+  form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    this.autorForm = this.fb.group({
+  constructor(
+    private fb: FormBuilder,
+    private autorService: AutorService
+  ) {
+    this.form = this.fb.group({
       nombre: ['', Validators.required],
       nacionalidad: ['', Validators.required],
       fechaNacimiento: ['', Validators.required]
     });
   }
 
-  guardarAutor() {
-    if (this.autorForm.valid) {
-      const autorData = this.autorForm.value;
-      if (this.editingIndex !== null) {
-        // Actualizar autor existente
-        this.autores[this.editingIndex] = autorData;
-      } else {
-        // Agregar nuevo autor
-        autorData.id = this.autores.length + 1;
-        this.autores.push(autorData);
+  ngOnInit(): void {
+    this.cargarListaAutores();
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  cargarListaAutores() {
+    this.autorService.getAutores().subscribe({
+      next: (data) => {
+        this.autores = data;
+      },
+      error: (error) => {
+        Swal.fire('Error', error.error.message || 'Error al cargar autores', 'error');
       }
-      this.cancelarEdicion();
+    });
+  }
+
+  crearAutorModal(modoForm: string) {
+    this.modoFormulario = modoForm;
+    this.autorSelected = null;
+    this.form.reset();
+    this.abrirModal();
+  }
+
+  abrirModal() {
+    const modalElement = document.getElementById('crearAutorModal');
+    if (modalElement) {
+      if (!this.modalInstance) {
+        this.modalInstance = new bootstrap.Modal(modalElement);
+      }
+      this.modalInstance.show();
     }
   }
 
-  editarAutor(index: number) {
-    this.editingIndex = index;
-    this.autorForm.patchValue(this.autores[index]);
-  }
-
-  eliminarAutor(index: number) {
-    this.autores.splice(index, 1);
-    if (this.editingIndex === index) {
-      this.cancelarEdicion();
+  cerrarModal() {
+    this.form.reset();
+    if (this.modalInstance) {
+      this.modalInstance.hide();
     }
   }
 
-  cancelarEdicion() {
-    this.editingIndex = null;
-    this.autorForm.reset();
+  abrirModoEdicion(autor: Autor) {
+    this.modoFormulario = 'E';
+    this.autorSelected = autor;
+    this.form.patchValue(autor);
+    this.abrirModal();
+  }
+
+guardarActualizarAutor() {
+    // Clear previous backend errors
+    this.form.get('nombre')?.setErrors(null);
+
+    if (this.form.valid) {
+      const autorData = this.form.getRawValue();
+      if (this.modoFormulario === 'C') {
+        this.autorService.crearAutor(autorData).subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Autor creado correctamente', 'success');
+            this.cargarListaAutores();
+          },
+          error: (error) => {
+            if (error.error && error.error.message && error.error.message.includes('ya existe')) {
+              this.form.get('nombre')?.setErrors({ backend: error.error.message });
+            } else {
+              Swal.fire('Error', error.error.message || 'Error al crear autor', 'error');
+            }
+          }
+        });
+      } else if (this.modoFormulario === 'E' && this.autorSelected) {
+        const autorToUpdate = { ...this.autorSelected, ...autorData };
+        this.autorService.actualizarAutor(autorToUpdate).subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Autor actualizado correctamente', 'success');
+            this.cargarListaAutores();
+          },
+          error: (error) => {
+            if (error.error && error.error.message && error.error.message.includes('ya existe')) {
+              this.form.get('nombre')?.setErrors({ backend: error.error.message });
+            } else {
+              Swal.fire('Error', error.error.message || 'Error al actualizar autor', 'error');
+            }
+          }
+        });
+      }
+    }
   }
 }

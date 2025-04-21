@@ -1,64 +1,66 @@
-<div class="container">
+<div class="container mt-4">
   <h2>Gestión de Autores</h2>
-  
-  <!-- Formulario de autor -->
-  <form [formGroup]="autorForm" (ngSubmit)="guardarAutor()" class="mb-4">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" formControlName="nombre" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Nacionalidad</label>
-          <input type="text" formControlName="nacionalidad" class="form-control">
-        </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Fecha de Nacimiento</label>
-          <input type="date" formControlName="fechaNacimiento" class="form-control">
-        </div>
-      </div>
-    </div>
-    
-    <div class="form-group mt-3">
-      <button type="submit" class="btn btn-primary me-2">
-        {{editingIndex !== null ? 'Actualizar' : 'Guardar'}}
-      </button>
-      <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()" *ngIf="editingIndex !== null">
-        Cancelar
-      </button>
-    </div>
-  </form>
+  <button class="btn btn-primary mb-3" (click)="crearAutorModal('C')">Crear Nuevo Autor</button>
 
-  <!-- Lista de autores -->
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Nacionalidad</th>
-          <th>Fecha Nacimiento</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let autor of autores; let i = index">
-          <td>{{autor.nombre}}</td>
-          <td>{{autor.nacionalidad}}</td>
-          <td>{{autor.fechaNacimiento | date}}</td>
-          <td>
-            <button class="btn btn-sm btn-warning me-2" (click)="editarAutor(i)">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="eliminarAutor(i)">Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Nacionalidad</th>
+        <th>Fecha de Nacimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let autor of autores; let i = index">
+        <td>{{ autor['nombre'] }}</td>
+        <td>{{ autor['nacionalidad'] }}</td>
+        <td>{{ autor['fechaNacimiento'] | date:'yyyy-MM-dd' }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="abrirModoEdicion(autor)">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form [formGroup]="form" (ngSubmit)="guardarActualizarAutor()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearAutorModalLabel">{{ modoFormulario === 'C' ? 'Crear Autor' : 'Actualizar Autor' }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" />
+            <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)" class="text-danger">
+              El nombre es obligatorio.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="nacionalidad" class="form-label">Nacionalidad</label>
+            <input id="nacionalidad" type="text" class="form-control" formControlName="nacionalidad" />
+            <div *ngIf="f['nacionalidad'].invalid && (f['nacionalidad'].dirty || f['nacionalidad'].touched)" class="text-danger">
+              La nacionalidad es obligatoria.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <input id="fechaNacimiento" type="date" class="form-control" formControlName="fechaNacimiento" />
+            <div *ngIf="f['fechaNacimiento'].invalid && (f['fechaNacimiento'].dirty || f['fechaNacimiento'].touched)" class="text-danger">
+              La fecha de nacimiento es obligatoria.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">{{ modoFormulario === 'C' ? 'Crear' : 'Actualizar' }}</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
