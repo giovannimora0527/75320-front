@@ -1,4 +1,28 @@
-import { Component, OnDestroy, ViewEncapsulation, inject, input } from '@angular/core';
+import { Component } from '@angular/core';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { SpinnerService } from 'src/app/services/spinner.service';
+
+@Component({
+  selector: 'app-spinner',
+  standalone: true,
+  imports: [NgxSpinnerModule],
+  templateUrl: './spinner.component.html'
+})
+export class SpinnerComponent {
+  spinnerType = 'ball-scale-multiple';
+
+  constructor(private spinnerService: SpinnerService) {
+    this.spinnerService.spinnerType$.subscribe(type => {
+      this.spinnerType = type;
+    });
+  }
+}
+
+
+
+
+
+/*import { Component, OnDestroy, ViewEncapsulation, inject, input } from '@angular/core';
 import { Spinkit } from './spinkits';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 
@@ -33,4 +57,4 @@ export class SpinnerComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.isSpinnerVisible = false;
   }
-}
+}*/

@@ -1,11 +1,7 @@
-@if (isSpinnerVisible) {
-  <div id="http-loader">
-    <div class="loader-bg">
-      @if (spinner() === Spinkit.skLine) {
-        <div class="sk-line-material" [class.colored]="!backgroundColor()">
-          <div class="sk-child sk-bounce1" [style.background-color]="backgroundColor()"></div>
-        </div>
-      }
-    </div>
-  </div>
-}
+<ngx-spinner
+  [type]="spinnerType"
+  [fullScreen]="true"
+  bdColor="rgba(0, 0, 0, 0.8)"
+  color="#fff"
+  size="medium">
+</ngx-spinner>

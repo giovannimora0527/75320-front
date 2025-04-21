@@ -1,1 +1,135 @@
-<p>autor works!</p>
+<div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-primary" (click)="crearAutorModal('C')" title="Crear un autor nuevo">
+              <i class="fa fa-plus"></i>
+              &nbsp;Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="table table-responsive">
+                  <table class="table table-responsive table-stripped">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Fecha Nacimiento</th>
+                        <th>Nacionalidad</th>
+                        <th># Libros</th>
+                        <th>Títulos</th>
+                        <th class="text-center">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="autores.length === 0">
+                      <tr>
+                        <td colspan="6" class="text-center">No hay registros disponibles</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="autores.length > 0">
+                      <tr *ngFor="let autor of autores">
+                        <td>{{ autor.nombre }}</td>
+                        <td>{{ autor.fechaNacimiento | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ autor.nacionalidad }}</td>
+                        <td>{{ autor.numeroLibros }}</td>
+                        <td>
+                          <ul *ngIf="autor.titulosLibros.length > 0">
+                            <li *ngFor="let titulo of autor.titulosLibros">{{ titulo }}</li>
+                          </ul>
+                        </td>
+                        <td class="text-center">
+                          <button class="btn btn-outline-primary btn-sm" title="Editar autor" (click)="abrirModoEdicion(autor)">
+                            <i class="fa fa-edit"></i>
+                            &nbsp;Editar
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal crear/actualizar autor -->
+  <div
+    class="modal fade"
+    id="crearAutorModal"
+    tabindex="-1"
+    aria-labelledby="crearAutorModalLabel"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearAutorModalLabel">{{ accion }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre"
+                [ngModel]="autorSelected?.nombre" />
+              <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+                El nombre es requerido.
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+              <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento"
+                [ngModel]="autorSelected?.fechaNacimiento" />
+              <div *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched" class="text-danger">
+                La fecha de nacimiento es requerida.
+              </div>
+            </div>
+  
+            <div class="mb-3">
+                <label for="nacionalidad" class="form-label">Nacionalidad del autor</label>
+                <select class="form-select" formControlName="nacionalidad">
+                  <option [value]="" disabled>Seleccione una opción</option>
+                  <option value="Argentina">Argentina</option>
+                  <option value="Bolivia">Bolivia</option>
+                  <option value="Chile">Chile</option>
+                  <option value="Colombia">Colombia</option>
+                  <option value="Costa Rica">Costa Rica</option>
+                  <option value="Cuba">Cuba</option>
+                  <option value="Ecuador">Ecuador</option>
+                  <option value="El Salvador">El Salvador</option>
+                  <option value="Guatemala">Guatemala</option>
+                  <option value="Honduras">Honduras</option>
+                  <option value="México">México</option>
+                  <option value="Nicaragua">Nicaragua</option>
+                  <option value="Panamá">Panamá</option>
+                  <option value="Paraguay">Paraguay</option>
+                  <option value="Perú">Perú</option>
+                  <option value="República Dominicana">República Dominicana</option>
+                  <option value="Uruguay">Uruguay</option>
+                  <option value="Venezuela">Venezuela</option>
+                </select>
+                <div *ngIf="form.get('nacionalidad')?.hasError('required') && form.get('nacionalidad')?.touched" class="text-danger">
+                  La nacionalidad es requerida.
+                </div>
+              </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarActualizarAutor()">{{ accion }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
