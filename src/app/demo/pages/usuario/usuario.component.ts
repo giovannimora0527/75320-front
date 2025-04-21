@@ -94,6 +94,7 @@ export class UsuarioComponent {
   }
 
   guardarActualizarUsuario() {
+<<<<<<< Updated upstream
     console.log('Entro');
     console.log(this.form.valid);
     if (this.form.valid) {
@@ -103,6 +104,50 @@ export class UsuarioComponent {
       } else {
         console.log('Actualizamos un usuario existente');
       }
+=======
+  if (this.modoFormulario === 'C') {
+    this.form.get('activo').setValue(true);
+  }
+
+  this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario" : "Actualizando usuario";
+  this.spinner.show();
+
+  if (this.form.valid) {
+    if (this.modoFormulario.includes('C')) {
+      this.usuarioService.crearUsuario(this.form.getRawValue())
+        .subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Usuario creado exitosamente', 'success');
+            this.cargarListaUsuarios();
+            this.form.reset();
+            this.form.markAsPristine();
+            this.form.markAsUntouched();
+          },
+          error: (error) => {
+            Swal.fire('Error', error.error.message, 'error');
+          }
+        });
+    } else {
+      // Actualizar solo los campos específicos
+      this.usuarioSelected = {
+        ...this.usuarioSelected,
+        ...this.form.getRawValue()
+      };
+      this.usuarioService.actualizarUsuario(this.usuarioSelected)
+        .subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Usuario actualizado exitosamente', 'success');
+            this.cargarListaUsuarios();
+            this.form.reset();
+            this.form.markAsPristine();
+            this.form.markAsUntouched();
+          },
+          error: err => Swal.fire('Error', err.error.message, 'error')
+        });
+>>>>>>> Stashed changes
     }
   }
+}
 }

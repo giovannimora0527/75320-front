@@ -21,4 +21,17 @@ export class UsuarioService {
   getUsuarios(): Observable<Usuario[]> {
     return this.backendService.get(environment.apiUrlAuth, this.api, "listar");
   }
+<<<<<<< Updated upstream
+=======
+
+  crearUsuario(usuario: UsuarioRq):  Observable<Usuario> {
+    return this.backendService.post(environment.apiUrlAuth, 
+      this.api, "guardar-usuario", usuario);
+  }
+
+  actualizarUsuario(usuario: Usuario):  Observable<Usuario> {
+    return this.backendService.post(environment.apiUrlAuth, 
+      this.api, "actualizar-usuario", usuario);
+  }
+>>>>>>> Stashed changes
 }
