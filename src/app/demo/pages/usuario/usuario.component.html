@@ -1,3 +1,7 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+  {{msjSpinner}}...
+</ngx-spinner>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -51,7 +55,7 @@
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar usuario"
-                        (click)="abrirModoEdicion(usuario)">
+                          (click)="abrirModoEdicion(usuario)">
                           <i class="fa fa-edit"></i>
                           &nbsp;Editar
                         </button>
@@ -69,14 +73,8 @@
 </div>
 
 <!-- Modal crear/actualizar usuarios -->
-<div
-  class="modal fade"
-  id="crearUsuarioModal"
-  tabindex="-1"
-  aria-labelledby="crearUsuarioModalLabel" 
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
->
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel"
+  data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
@@ -87,17 +85,17 @@
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre Completo</label>
-            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
-            [ngModel]="usuarioSelected?.nombre"/>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre"
+              placeholder="Ingrese el nombre completo" [ngModel]="usuarioSelected?.nombre" />
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre completo es requerido.
             </div>
           </div>
-        
+
           <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
-            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" 
-            [ngModel]="usuarioSelected?.correo"/>
+            <input type="email" formControlName="correo" class="form-control" id="correo"
+              placeholder="Ingrese el correo" [ngModel]="usuarioSelected?.correo" />
             <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
               El correo es requerido.
             </div>
@@ -105,19 +103,28 @@
               El formato del correo no es válido.
             </div>
           </div>
-        
+
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono</label>
-            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
-            [ngModel]="usuarioSelected?.telefono"/>
-            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+              placeholder="Ingrese el teléfono" [ngModel]="usuarioSelected?.telefono" />
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched"
+              class="text-danger">
               El teléfono es requerido.
             </div>
+          </div>
+
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="activo" class="form-label">Estado</label>
+            <select class="form-select" formControlName="activo">
+              <option [value]="true">Activo</option>
+              <option [value]="false">Inactivo</option>
+            </select>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
         <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">{{accion}}</button>
       </div>
     </div>

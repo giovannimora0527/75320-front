@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 export class UsuarioService {
   private api = `usuario`;
 
-  constructor(private backendService: BackendService) { 
+  constructor(private backendService: BackendService) {
     this.testService();
   }
 
@@ -24,13 +24,13 @@ export class UsuarioService {
     return this.backendService.get(environment.apiUrlAuth, this.api, "listar");
   }
 
-  crearUsuario(usuario: UsuarioRq):  Observable<UsuarioRs> {
-    return this.backendService.post(environment.apiUrlAuth, 
+  crearUsuario(usuario: UsuarioRq): Observable<UsuarioRs> {
+    return this.backendService.post(environment.apiUrlAuth,
       this.api, "guardar-usuario", usuario);
   }
 
-  actualizarUsuario(usuario: Usuario):  Observable<UsuarioRs> {
-    return this.backendService.post(environment.apiUrlAuth, 
+  actualizarUsuario(usuario: Usuario): Observable<UsuarioRs> {
+    return this.backendService.post(environment.apiUrlAuth,
       this.api, "actualizar-usuario", usuario);
   }
 }

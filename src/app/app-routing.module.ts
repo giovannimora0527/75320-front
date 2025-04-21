@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AutorComponent } from './demo/pages/autor/autor.component';
-import { LibrosComponent } from './demo/pages/libros/libros.component';
+import { LibroComponent } from './demo/pages/libros/libro.component';
 import { PrestamosComponent } from './demo/pages/prestamos/prestamos.component';
 
 export const routes: Routes = [
@@ -19,7 +19,7 @@ export const routes: Routes = [
     children: [
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' } },
       { path: 'autores', component: AutorComponent, data: { title: 'Autores' } },
-      { path: 'libros', component: LibrosComponent, data: { title: 'Libros' } },
+      { path: 'libros', component: LibroComponent, data: { title: 'Libros' } },
       { path: 'prestamos', component: PrestamosComponent, data: { title: 'Préstamos' } }
     ]
   },

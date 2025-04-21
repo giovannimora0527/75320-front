@@ -1,0 +1,140 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">{{ msjSpinner
+}}...</ngx-spinner>
+<div class="container">
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-outline-primary" (click)="crearModal('C')" title="Crear un usuario nuevo">
+                    <i class="fa fa-plus"></i>
+                    &nbsp;Nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table table-responsive">
+                            <table class="table table-responsive table-stripped">
+                                <thead>
+                                    <tr>
+                                        <th>Titulo</th>
+                                        <th>Autor</th>
+                                        <th>Año Publicación</th>
+                                        <th>Categoria</th>
+                                        <th>Existencias</th>
+                                        <th class="text-center">Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="libros.length === 0">
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay registros disponibles</td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="libros.length > 0">
+                                    <tr *ngFor="let libro of libros">
+                                        <td>
+                                            {{ libro.titulo }}
+                                        </td>
+                                        <td>
+                                            {{ libro.idAutor }}
+                                        </td>
+                                        <td>
+                                            {{ libro.anioPublicacion }}
+                                        </td>
+                                        <td>
+                                            {{ libro.categoria }}
+                                        </td>
+                                        <td>
+                                            {{ libro.existencias }}
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-outline-primary btn-sm" title="Editar libro"
+                                                (click)="abrirModoEdicion(libro)">
+                                                <i class="fa fa-edit"></i>
+                                                &nbsp;Editar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal crear/actualizar libros -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" data-bs-backdrop="static"
+data-bs-keyboard="false">
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="crearModalLabel">{{accion}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="form">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título del libro</label>
+                    <input type="text" formControlName="titulo" class="form-control" id="titulo"
+                        placeholder="Ingrese el nombre del libro" [ngModel]="libroSelected?.titulo" />
+                    <div *ngIf="form.get('titulo')?.hasError('required') && form.get('titulo')?.touched"
+                        class="text-danger">
+                        El titulo es requerido.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="anioPublicacion" class="form-label">Año de publicación del libro</label>
+                    <input type="number" formControlName="anioPublicacion" class="form-control" id="anioPublicacion"
+                        placeholder="Ingrese el año" [ngModel]="libroSelected?.anioPublicacion" />
+                    <div *ngIf="form.get('anioPublicacion')?.hasError('required') && form.get('anioPublicacion')?.touched"
+                        class="text-danger">
+                        El año de publicación es requerido.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoría del libro</label>
+                    <select class="form-select" formControlName="categoria">
+                        <option [value]="" disabled>Seleccione una opcion</option>
+                        <option [value]="1">Novela</option>
+                        <option [value]="2">Relatos</option>
+                        <option [value]="3">Misterio</option>
+                        <option [value]="4">Ficción contemporánea</option>
+                        <option [value]="5">Romance</option>
+                        <option [value]="6">Ciencia ficción</option>
+                        <option [value]="7">Fantasia</option>
+                    </select>
+                    <div *ngIf="form.get('categoria')?.hasError('required') && form.get('categoria')?.touched"
+                        class="text-danger">
+                        La categoria es requerido.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="existencias" class="form-label">Existencias</label>
+                    <input type="number" formControlName="existencias" class="form-control" id="existencias"
+                        placeholder="Ingrese la cantidad de existencias del libro"
+                        [ngModel]="libroSelected?.existencias" />
+                    <div *ngIf="form.get('existencias')?.hasError('required') && form.get('existencias')?.touched"
+                        class="text-danger">
+                        La cantidad de existencias es requerido.
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+            <button type="button" class="btn btn-primary">{{accion}}</button>
+        </div>
+    </div>
+</div>
+</div>
