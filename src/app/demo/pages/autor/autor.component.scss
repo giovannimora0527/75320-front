@@ -1,0 +1,12 @@
+.swal-overlay {
+    z-index: 1060 !important;
+    /* Mayor que el modal Bootstrap (1050) */
+}
+
+#crearAutorModal.modal {
+    z-index: 1040 !important;
+}
+
+#crearAutorModal .modal-backdrop {
+    z-index: 1030 !important;
+}

@@ -3,8 +3,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioService } from './service/usuario.service';
 import { Usuario } from 'src/app/models/usuario';
+import { FormBuilder } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
