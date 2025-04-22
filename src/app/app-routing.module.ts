@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
-import { AutorComponent } from './demo/pages/autor/autor.component';
+import { AutorComponent } from './demo/pages/autor/AutorComponent';
 import { LibrosComponent } from './demo/pages/libros/libros.component';
 import { PrestamosComponent } from './demo/pages/prestamos/prestamos.component';
 

@@ -171,7 +171,7 @@
   dependencies:
     "@angular-eslint/bundled-angular-compiler" "19.0.2"
 
-"@angular/animations@^19.0.1", "@angular/animations@19.0.5":
+"@angular/animations@^19.0.1", "@angular/animations@>=19.0.0", "@angular/animations@19.0.5":
   version "19.0.5"
   resolved "https://registry.npmjs.org/@angular/animations/-/animations-19.0.5.tgz"
   integrity sha512-HCOF2CrhUvjoZWusd4nh32VOxpUrg6bV+3Z8Q36Ix3aZdni8v0qoP2rl5wGbotaPtYg5RtyDH60Z2AOPKqlrZg==
@@ -243,7 +243,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^19.0.0", "@angular/common@^19.0.0 || ^20.0.0", "@angular/common@^19.0.1", "@angular/common@>=17.3.0", "@angular/common@19.0.5":
+"@angular/common@^19.0.0", "@angular/common@^19.0.0 || ^20.0.0", "@angular/common@^19.0.1", "@angular/common@>=17.3.0", "@angular/common@>=19.0.0", "@angular/common@19.0.5":
   version "19.0.5"
   resolved "https://registry.npmjs.org/@angular/common/-/common-19.0.5.tgz"
   integrity sha512-fFK+euCj1AjBHBCpj9VnduMSeqoMRhZZHbhPYiND7tucRRJ8vwGU0sYK2KI/Ko+fsrNIXL/0O4F36jVPl09Smg==
@@ -271,14 +271,14 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^19.0.0", "@angular/core@^19.0.0 || ^20.0.0", "@angular/core@^19.0.1", "@angular/core@>=17.3.0", "@angular/core@19.0.5":
+"@angular/core@^19.0.0", "@angular/core@^19.0.0 || ^20.0.0", "@angular/core@^19.0.1", "@angular/core@>=17.3.0", "@angular/core@>=19.0.0", "@angular/core@19.0.5":
   version "19.0.5"
   resolved "https://registry.npmjs.org/@angular/core/-/core-19.0.5.tgz"
   integrity sha512-Ywc6sPO6G/Y1stfk3y/MallV/h0yzQ0vdOHRWueLrk5kD1DTdbolV4X03Cs3PuVvravgcSVE3nnuuHFuH32emQ==
   dependencies:
     tslib "^2.3.0"
 
-"@angular/forms@^19.0.0", "@angular/forms@^19.0.1", "@angular/forms@19.0.5":
+"@angular/forms@^19.0.0", "@angular/forms@^19.0.1", "@angular/forms@^19.0.5":
   version "19.0.5"
   resolved "https://registry.npmjs.org/@angular/forms/-/forms-19.0.5.tgz"
   integrity sha512-OhNFkfOoguqCDq07vNBV28FFrmTM8S11Z3Cd6PQZJJF9TgAtpV5KtF7A3eXBCN92W4pmqluomPjfK7YyImzIYQ==
@@ -2592,10 +2592,10 @@ boolbase@^1.0.0:
   resolved "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
-bootstrap@^5.3.3:
-  version "5.3.3"
-  resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.3.tgz"
-  integrity sha512-8HLCdWgyoMguSO9o+aH+iuZ+aht+mzW0u3HIMzVu7Srrpv7EBBxTnrFlSCskwdY1+EOFQSm7uMJhNQHkdPcmjg==
+bootstrap@^5.3.5:
+  version "5.3.5"
+  resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.5.tgz"
+  integrity sha512-ct1CHKtiobRimyGzmsSldEtM03E8fcEX4Tb3dGXz1V8faRwM50+vfHwTzOxB3IlKO7m+9vTH3s/3C6T2EAPeTA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -5124,6 +5124,13 @@ ngx-scrollbar@16.1.1:
   version "16.1.1"
   resolved "https://registry.npmjs.org/ngx-scrollbar/-/ngx-scrollbar-16.1.1.tgz"
   integrity sha512-gddeGYeWxDF56ZqVxDILxOoPNwf6cEaBBFP2StQkx52yw2TeUx7rz/Di1guZZ7yZ2hZqANFmDEHthS6TDyvV3Q==
+  dependencies:
+    tslib "^2.3.0"
+
+ngx-spinner@^19.0.0:
+  version "19.0.0"
+  resolved "https://registry.npmjs.org/ngx-spinner/-/ngx-spinner-19.0.0.tgz"
+  integrity sha512-UqmYvLfPyA1AkLw3xGe7NscIiJVG7u9j7NMW10J38Kp8EXv8l/pQdLlqFJS5x70dbRkt90lvOIvEBZM8b/rN7g==
   dependencies:
     tslib "^2.3.0"
 
