@@ -109,54 +109,48 @@ export class UsuarioComponent {
   }
 
   guardarActualizarUsuario() {
-    if (this.modoFormulario === 'C') {
-      this.form.get('activo').setValue(true);
-    }
+  if (this.modoFormulario === 'C') {
+    this.form.get('activo').setValue(true);
+  }
 
-    this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario": "Actualizando usuario";
-    this.spinner.show();
+  this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario" : "Actualizando usuario";
+  this.spinner.show();
 
-    if (this.form.valid) {      
-      if (this.modoFormulario.includes('C')) {        
-        this.usuarioService.crearUsuario(this.form.getRawValue())
-        .subscribe(
-          {
-             next: (data) => {               
-               this.cerrarModal();
-               this.messageUtils.showMessage("Éxito", data.message, "success");
-               this.cargarListaUsuarios();
-               this.form.reset();
-               this.form.markAsPristine();
-               this.form.markAsUntouched();
-             },
-             error: (error) => {            
-              this.messageUtils.showMessage("Error", error.error.message, "error");
-             }
+  if (this.form.valid) {
+    if (this.modoFormulario.includes('C')) {
+      this.usuarioService.crearUsuario(this.form.getRawValue())
+        .subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Usuario creado exitosamente', 'success');
+            this.cargarListaUsuarios();
+            this.form.reset();
+            this.form.markAsPristine();
+            this.form.markAsUntouched();
+          },
+          error: (error) => {
+            Swal.fire('Error', error.error.message, 'error');
           }
-        );
-      } else { 
-        // Actualizar solo los campos específicos
-        this.usuarioSelected = {
-          ...this.usuarioSelected, // Mantener los valores anteriores
-          ...this.form.getRawValue() // Sobrescribir con los valores del formulario
-        };          
-        this.usuarioService.actualizarUsuario(this.usuarioSelected)
-        .subscribe(
-          {
-             next: (data) => {               
-               this.cerrarModal();
-               this.messageUtils.showMessage("Éxito", data.message, "success");
-               this.cargarListaUsuarios();
-               this.form.reset();
-               this.form.markAsPristine();
-               this.form.markAsUntouched();
-             },
-             error: (error) => {            
-              this.messageUtils.showMessage("Error", error.error.message, "warning");
-             }
-          }
-        );
-      }
+        });
+    } else {
+      // Actualizar solo los campos específicos
+      this.usuarioSelected = {
+        ...this.usuarioSelected,
+        ...this.form.getRawValue()
+      };
+      this.usuarioService.actualizarUsuario(this.usuarioSelected)
+        .subscribe({
+          next: (data) => {
+            this.cerrarModal();
+            Swal.fire('Éxito', 'Usuario actualizado exitosamente', 'success');
+            this.cargarListaUsuarios();
+            this.form.reset();
+            this.form.markAsPristine();
+            this.form.markAsUntouched();
+          },
+          error: err => Swal.fire('Error', err.error.message, 'error')
+        });
     }
   }
+}
 }

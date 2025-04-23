@@ -17,11 +17,12 @@ export class AutorService {
 
   // 2. Crear nuevo autor
   crearAutor(autor: Autor): Observable<Autor> {
-    return this.backendService.post(environment.apiUrlAuth, this.api, 'crear', autor);
+    return this.backendService.post(environment.apiUrlAuth, this.api, 'guardar-autor', autor);
   }
 
   // 3. Actualizar autor
-  actualizarAutor(autor: Autor): Observable<Autor> {
-    return this.backendService.put(environment.apiUrlAuth, this.api, 'actualizar', autor);
+  actualizarAutor(autor: Autor):  Observable<Autor> {
+      return this.backendService.post(environment.apiUrlAuth, 
+        this.api, "actualizar-autor", autor);
   }
 }

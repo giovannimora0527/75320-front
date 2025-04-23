@@ -99,10 +99,23 @@ export class AutorComponent {
           }
         });
       } else {
-        // lógica de actualización la agregamos luego
-      }
+        // Actualizar autor
+      const autorActualizado: Autor = {
+        ...this.autorSelected, // mantiene el ID y otros campos si hay
+        ...this.form.value     // actualiza los datos del formulario
+      };
+
+      this.autorService.actualizarAutor(autorActualizado).subscribe({
+        next: () => {
+          this.cargarListaAutores();
+          this.cerrarModal();
+          Swal.fire('Éxito', 'Autor actualizado exitosamente', 'success');
+        },
+        error: err => Swal.fire('Error', err.error.message, 'error')
+      });
     }
   }
+}
 
   abrirModoEdicion(autor: Autor) {
     this.crearAutorModal('E');

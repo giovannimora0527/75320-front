@@ -24,12 +24,12 @@ export class UsuarioService {
     return this.backendService.get(environment.apiUrlAuth, this.api, "listar");
   }
 
-  crearUsuario(usuario: UsuarioRq):  Observable<UsuarioRs> {
+  crearUsuario(usuario: UsuarioRq):  Observable<Usuario> {
     return this.backendService.post(environment.apiUrlAuth, 
       this.api, "guardar-usuario", usuario);
   }
 
-  actualizarUsuario(usuario: Usuario):  Observable<UsuarioRs> {
+  actualizarUsuario(usuario: Usuario):  Observable<Usuario> {
     return this.backendService.post(environment.apiUrlAuth, 
       this.api, "actualizar-usuario", usuario);
   }
