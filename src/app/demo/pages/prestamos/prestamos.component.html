@@ -1,1 +1,65 @@
-<p>prestamos works!</p>
+<h1>Gestión de Préstamos</h1>
+
+<!-- Registrar Préstamo -->
+<div>
+  <h3>Nuevo Préstamo</h3>
+  <label>Usuario:</label>
+  <select [(ngModel)]="nuevoPrestamo.usuarioId">
+    <option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.nombre }}</option>
+  </select>
+
+  <label>Libro:</label>
+  <select [(ngModel)]="nuevoPrestamo.libroId">
+    <option *ngFor="let libro of librosDisponibles" [value]="libro.id">{{ libro.titulo }}</option>
+  </select>
+
+  <label>Fecha de préstamo:</label>
+  <input type="date" [(ngModel)]="nuevoPrestamo.fechaPrestamo" />
+
+  <label>Fecha de devolución:</label>
+  <input type="date" [(ngModel)]="nuevoPrestamo.fechaDevolucion" />
+
+  <button (click)="crearPrestamo()">Registrar Préstamo</button>
+</div>
+
+<hr />
+
+<!-- Lista de Préstamos -->
+<h3>Préstamos Realizados</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Libro</th>
+      <th>Fecha Préstamo</th>
+      <th>Fecha Devolución</th>
+      <th>Estado</th>
+      <th>Fecha Entrega</th>
+      <th>Opciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let prestamo of prestamos">
+      <td>{{ obtenerNombreUsuario(prestamo.usuarioId) }}</td>
+      <td>{{ obtenerTituloLibro(prestamo.libroId) }}</td>
+      <td>{{ prestamo.fechaPrestamo | date:'shortDate' }}</td>
+      <td>{{ prestamo.fechaDevolucion | date:'shortDate' }}</td>
+      <td [ngClass]="getEstadoClase(prestamo.estado)">{{ prestamo.estado }}</td>
+      <td>{{ prestamo.fechaEntrega ? prestamo.fechaEntrega : 'No Entregado' }}</td>
+      <td>
+        <button (click)="editarPrestamo(prestamo)">Editar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<!-- Editar Préstamo -->
+<div *ngIf="prestamoEditar">
+  <h3>Editar Préstamo</h3>
+  <label>Fecha de Entrega:</label>
+  <input type="date" [(ngModel)]="prestamoEditar.fechaEntrega" />
+  <button (click)="actualizarPrestamo()">Guardar</button>
+  <button (click)="cancelarEdicion()">Cancelar</button>
+</div>

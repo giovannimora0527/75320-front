@@ -1,1 +1,47 @@
-<p>autor works!</p>
+<h1>Gestión de Autores</h1>
+
+<!-- Crear Autor -->
+<div>
+  <h3>Crear Nuevo Autor</h3>
+  <input
+    type="text"
+    [(ngModel)]="nuevoAutor.nombre"
+    placeholder="Nombre del autor"
+  />
+  <button (click)="crearAutor()">Crear</button>
+</div>
+
+<hr />
+
+<!-- Editar Autor -->
+<div *ngIf="autorEditar">
+  <h3>Editar Autor</h3>
+  <input
+    type="text"
+    [(ngModel)]="autorEditar.nombre"
+    placeholder="Nuevo nombre"
+  />
+  <button (click)="actualizarAutor()">Actualizar</button>
+  <button (click)="cancelarEdicion()">Cancelar</button>
+</div>
+
+<hr />
+
+<!-- Tabla de Autores -->
+<h3>Lista de Autores</h3>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let autor of autores">
+      <td>{{ autor.nombre }}</td>
+      <td>
+        <button (click)="prepararEditar(autor)">Editar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
