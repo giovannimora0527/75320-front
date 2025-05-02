@@ -1,8 +1,8 @@
 export class Libro {
     idLibro!: number;
     titulo!: string;
-    idAutor!: number;
-    anioPublicacion?: number;
+    autorId!: number;
+    anioPublicacion?: Date;
     categoria?: string;
     existencias!: number;
 }
