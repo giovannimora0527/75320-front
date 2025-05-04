@@ -1,1 +1,127 @@
-<p>prestamos works!</p>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+    {{ msjSpinner }}...
+</ngx-spinner>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="col">
+                <button class="btn btn-outline-primary" (click)="crearPrestamoModal('C')"
+                    title="Crear un Prestamo nuevo">
+                    <i class="fa fa-plus"></i>
+                    &nbsp;Nuevo
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Fecha Entrega</th>
+                                <th>Estado</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="prestamos.length === 0">
+                            <tr>
+                                <td colspan="6" class="text-center">No hay préstamos registrados</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="prestamos.length > 0">
+                            <tr *ngFor="let prestamo of prestamos">
+                                <td>{{ prestamo.fechaPrestamo | date: 'yyyy-MM-dd' }}</td>
+                                <td>{{ prestamo.fechaDevolucion | date: 'yyyy-MM-dd' }}</td>
+                                <td>{{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date: 'yyyy-MM-dd') : 'No
+                                    entregado'
+                                    }}</td>
+                                <td [ngClass]="getColorEstado(prestamo.estado)">
+                                    {{ prestamo.estado }}
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(prestamo)">
+                                        <i class="fa fa-edit"></i> Editar entrega
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Actualizar Entrega -->
+    <div class="modal fade" id="crearPrestamoModal" tabindex="-1" aria-labelledby="crearPrestamoModalLabel"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearPrestamoModalLabel">{{ accion }}</h5>
+                    <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="form">
+
+                        <!-- Campos visibles solo en modo CREAR -->
+                        <div *ngIf="modoFormulario === 'C'">
+                            <div class="mb-3">
+                                <label for="usuario" class="form-label">Usuario</label>
+                                <input type="text" formControlName="usuario" class="form-control" id="usuario" />
+                                <div *ngIf="form.get('usuario')?.invalid && form.get('usuario')?.touched"
+                                    class="text-danger">
+                                    El nombre de usuario es requerido.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="categoria" class="form-label">Categoría del libro</label>
+                                <select class="form-select" formControlName="categoria">
+                                    <option [value]="" disabled>Seleccione una opción</option>
+                                    <option [value]="1">Novela</option>
+                                    <option [value]="2">Relatos</option>
+                                    <option [value]="3">Misterio</option>
+                                    <option [value]="4">Ficción contemporánea</option>
+                                    <option [value]="5">Romance</option>
+                                    <option [value]="6">Ciencia ficción</option>
+                                    <option [value]="7">Fantasía</option>
+                                </select>
+                                <div *ngIf="form.get('categoria')?.hasError('required') && form.get('categoria')?.touched"
+                                    class="text-danger">
+                                    La categoría es requerida.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+                                <input type="date" formControlName="fechaDevolucion" class="form-control"
+                                    id="fechaDevolucion" />
+                                <div *ngIf="form.get('fechaDevolucion')?.invalid && form.get('fechaDevolucion')?.touched"
+                                    class="text-danger">
+                                    La fecha de devolución es requerida.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo visible solo en modo EDITAR -->
+                        <div class="mb-3" *ngIf="modoFormulario === 'E'">
+                            <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+                            <input type="date" formControlName="fechaEntrega" class="form-control" id="fechaEntrega" />
+                            <div *ngIf="form.get('fechaEntrega')?.invalid && form.get('fechaEntrega')?.touched"
+                                class="text-danger">
+                                La fecha de entrega es requerida.
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+                    <button class="btn btn-primary" (click)="actualizarPrestamo()">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
