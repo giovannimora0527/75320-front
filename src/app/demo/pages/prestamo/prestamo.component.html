@@ -1,1 +1,89 @@
-<p>prestamo works!</p>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Préstamos</h2>
+    <button class="btn btn-primary">
+      <i class="bi bi-plus"></i> Nuevo
+    </button>
+  </div>
+
+  <!-- Tabla de préstamos -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <table class="table table-hover table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Usuario</th>
+            <th>Libro</th>
+            <th>Fecha Préstamo</th>
+            <th>Fecha Devolución</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prestamo of prestamos">
+            <td>{{ prestamo.usuario }}</td>
+            <td>{{ prestamo.libro }}</td>
+            <td>{{ prestamo.fechaPrestamo | date: 'yyyy-MM-dd' }}</td>
+            <td>{{ prestamo.fechaDevolucion | date: 'yyyy-MM-dd' }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'bg-warning text-dark': prestamo.estado === 'PRESTADO',
+                'bg-success': prestamo.estado === 'DEVUELTO',
+                'bg-danger': prestamo.estado === 'VENCIDO'
+              }">
+                {{ prestamo.estado }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-success me-1" (click)="actualizarEstado(prestamo, 'DEVUELTO')">
+                Marcar Devuelto
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="actualizarEstado(prestamo, 'VENCIDO')">
+                Marcar Vencido
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Formulario de nuevo préstamo -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Nuevo Préstamo</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="crearPrestamo()" class="row g-3">
+        <div class="col-md-6">
+          <label for="usuario" class="form-label">Usuario</label>
+          <input id="usuario" type="text" class="form-control" [(ngModel)]="nuevoPrestamo.usuario" name="usuario" required>
+        </div>
+        <div class="col-md-6">
+          <label for="libro" class="form-label">Libro</label>
+          <input id="libro" type="text" class="form-control" [(ngModel)]="nuevoPrestamo.libro" name="libro" required>
+        </div>
+        <div class="col-md-6">
+          <label for="fechaPrestamo" class="form-label">Fecha de Préstamo</label>
+          <input id="fechaPrestamo" type="date" class="form-control" [(ngModel)]="nuevoPrestamo.fechaPrestamo" name="fechaPrestamo" required>
+        </div>
+        <div class="col-md-6">
+          <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+          <input id="fechaDevolucion" type="date" class="form-control" [(ngModel)]="nuevoPrestamo.fechaDevolucion" name="fechaDevolucion" required>
+        </div>
+        <div class="col-md-6">
+          <label for="estado" class="form-label">Estado</label>
+          <select id="estado" class="form-select" [(ngModel)]="nuevoPrestamo.estado" name="estado">
+            <option value="PRESTADO">PRESTADO</option>
+            <option value="VENCIDO">VENCIDO</option>
+            <option value="DEVUELTO">DEVUELTO</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

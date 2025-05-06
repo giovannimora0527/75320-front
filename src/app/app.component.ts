@@ -1,28 +1,27 @@
-// Angular import
+// Importaciones de Angular
 import { Component, OnInit, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
-// project import
+// Importación del componente Spinner
 import { SpinnerComponent } from './theme/shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [SpinnerComponent, RouterModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  private router = inject(Router);
+  readonly router = inject(Router); // Inyección de dependencias con readonly
 
-  title = 'Biblioteca Uniminuto';
+  title: string = 'Biblioteca Uniminuto';
 
-  // life cycle hook
-  ngOnInit() {
-    this.router.events.subscribe((evt) => {
-      if (!(evt instanceof NavigationEnd)) {
-        return;
+  ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        window.scrollTo(0, 0);
       }
-      window.scrollTo(0, 0);
     });
   }
 }

@@ -1,0 +1,39 @@
+.estado-prestado {
+    color: #e6a700;
+    font-weight: bold;
+  }
+  
+  .estado-vencido {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .estado-devuelto {
+    color: green;
+    font-weight: bold;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  
+  form {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  input, select, button {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  
