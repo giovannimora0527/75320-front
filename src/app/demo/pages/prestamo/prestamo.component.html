@@ -39,22 +39,21 @@
                   </tbody>
                   <tbody *ngIf="prestamos.length > 0">
                     <tr *ngFor="let prestamo of prestamos">
-                      <td>{{ prestamo.idUsuario }}</td>
-                      <td>{{ prestamo.idLibro }}</td>
+                      <td>{{ prestamo.usuario.nombre }}</td>
+                      <td>{{ prestamo.libro.titulo }}</td>
                       <td>{{ prestamo.fechaPrestamo }}</td>
                       <td>{{ prestamo.fechaDevolucion }}</td>
                       <td>
-                        <span 
-                          class="badge"
+                        <span                           
                           [ngClass]="{
-                            'bg-warning text-dark': prestamo.estado === 'Prestado',
-                            'bg-danger': prestamo.estado === 'Vencido',
-                            'bg-success': prestamo.estado === 'Devuelto'
+                          'prestado': prestamo.estado == 'PRESTADO',
+                          'vencido': prestamo.estado == 'VENCIDO',
+                          'devuelto': prestamo.estado == 'DEVUELTO'
                           }">
                           {{ prestamo.estado }}
                         </span>
                       </td>
-                      <td>{{ prestamo.fechaEntrega }}</td>
+                      <td>{{ prestamo.fechaEntrega == null || prestamo.fechaEntrega == 'undefined'? "No entregado": prestamo.fechaEntrega }}</td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar préstamo"
                           (click)="abrirModoEdicion(prestamo)">
