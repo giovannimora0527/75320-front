@@ -1,0 +1,14 @@
+<p>editar-libro works!</p>
+<h2>Editar Libro</h2>
+<form (ngSubmit)="guardar()">
+  <label for="titulo">Título:</label>
+  <input id="titulo" name="titulo" [(ngModel)]="libro.titulo" required />
+
+  <label for="autor">Autor:</label>
+  <input id="autor" name="autor" [(ngModel)]="libro.autor" required />
+
+  <label for="anioPublicacion">Año de Publicación:</label>
+  <input id="anioPublicacion" name="anioPublicacion" type="number" [(ngModel)]="libro.anioPublicacion" required />
+
+  <button type="submit">Guardar</button>
+</form>
