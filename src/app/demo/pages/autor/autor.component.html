@@ -1,1 +1,123 @@
-<p>autor works!</p>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+    {{ msjSpinner }}...
+  
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-primary" (click)="crearModal('C')" title="Crear un autor nuevo">
+              <i class="fa fa-plus"></i>
+              &nbsp;Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Ciudad</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th class="text-center">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="autores.length === 0">
+                      <tr>
+                        <td colspan="50" class="text-center">No hay registros disponibles</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="autores.length > 0">
+                      <tr *ngFor="let autor of autores">
+                        <td>{{ autor.nombre }}</td>
+                        <td>{{ autor.apellido }}</td>
+                        <td>{{ autor.ciudad || '-' }}</td>
+                        <td>{{ autor.direccion || '-' }}</td>
+                        <td>{{ autor.telefono || '-' }}</td>
+                        <td>{{ autor.email }}</td>
+                        <td class="text-center">
+                          <button class="btn btn-outline-primary btn-sm" title="Editar autor"
+                            (click)="abrirModoEdicion(autor)">
+                            <i class="fa fa-edit"></i>
+                            &nbsp;Editar
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal crear/actualizar autores -->
+  <div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearModalLabel">{{accion}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre" [ngModel]="autorSelected?.nombre" />
+              <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+                El nombre es requerido.
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" formControlName="apellido" class="form-control" id="apellido" placeholder="Ingrese el apellido" [ngModel]="autorSelected?.apellido" />
+              <div *ngIf="form.get('apellido')?.hasError('required') && form.get('apellido')?.touched" class="text-danger">
+                El apellido es requerido.
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="ciudad" class="form-label">Ciudad</label>
+              <input type="text" formControlName="ciudad" class="form-control" id="ciudad" placeholder="Ingrese la ciudad" [ngModel]="autorSelected?.ciudad" />
+            </div>
+  
+            <div class="mb-3">
+              <label for="direccion" class="form-label">Dirección</label>
+              <input type="text" formControlName="direccion" class="form-control" id="direccion" placeholder="Ingrese la dirección" [ngModel]="autorSelected?.direccion" />
+            </div>
+  
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" [ngModel]="autorSelected?.telefono" />
+            </div>
+  
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" formControlName="email" class="form-control" id="email" placeholder="Ingrese el email" [ngModel]="autorSelected?.email" />
+              <div *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched" class="text-danger">
+                Email inválido.
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+          <button type="button" class="btn btn-primary">{{accion}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
