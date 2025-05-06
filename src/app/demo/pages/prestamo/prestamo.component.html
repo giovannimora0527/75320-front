@@ -1,1 +1,107 @@
-<p>prestamo works!</p>
+<div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-primary" (click)="abrirModalNuevo()">
+              <i class="fa fa-plus"></i> &nbsp;Nuevo Préstamo
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Libro</th>
+                <th>Fecha Préstamo</th>
+                <th>Fecha Devolución</th>
+                <th>Fecha Entrega</th>
+                <th>Estado</th>
+                <th class="text-center">Opciones</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="prestamos.length === 0">
+              <tr><td colspan="7" class="text-center">No hay registros disponibles</td></tr>
+            </tbody>
+            <tbody *ngIf="prestamos.length > 0">
+              <tr *ngFor="let p of prestamos">
+                <td>{{ p.nombreUsuario }}</td>
+                <td>{{ p.tituloLibro }}</td>
+                <td>{{ p.fechaPrestamo }}</td>
+                <td>{{ p.fechaDevolucion }}</td>
+                <td>{{ p.fechaEntrega }}</td>
+                <td><span [style.color]="getColor(p.estado)">{{ p.estado }}</span></td>
+                <td class="text-center">
+                  <button class="btn btn-outline-success btn-sm" (click)="abrirModalEntrega(p)">
+                    <i class="fa fa-calendar-check"></i> Registrar Entrega
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal para nuevo préstamo -->
+  <div class="modal fade" id="modalPrestamo" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Préstamo</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label>Usuario</label>
+              <select class="form-select" formControlName="usuarioId">
+                <option *ngFor="let u of usuariosDisponibles" [value]="u.id">{{ u.nombre }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Libro</label>
+              <select class="form-select" formControlName="libroId">
+                <option *ngFor="let l of librosDisponibles" [value]="l.id">{{ l.titulo }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Fecha Devolución</label>
+              <input type="date" formControlName="fechaDevolucion" class="form-control" />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button class="btn btn-primary" (click)="guardarPrestamo()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal para registrar entrega -->
+  <div class="modal fade" id="modalEntrega" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrar Entrega</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="formEntrega">
+            <div class="mb-3">
+              <label>Fecha Entrega</label>
+              <input type="date" class="form-control" formControlName="fechaEntrega">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button class="btn btn-success" (click)="guardarEntrega()">Guardar Entrega</button>
+        </div>
+      </div>
+    </div>

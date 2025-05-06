@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { MessageUtils } from 'src/app/utils/message-utils';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { SpinnerService } from 'src/app/services/spinner.service'; // ✅
+import { SpinnerService } from 'src/app/services/spinner.service'; 
 
 declare const bootstrap: any;
 
@@ -46,7 +46,7 @@ export class UsuarioComponent {
     private formBuilder: FormBuilder,
     private messageUtils: MessageUtils,
     private spinner: NgxSpinnerService,
-    private spinnerService: SpinnerService // ✅ inyectado
+    private spinnerService: SpinnerService //  inyectado
   ) {
     this.cargarListaUsuarios();
     this.cargarFormulario();
@@ -66,7 +66,7 @@ export class UsuarioComponent {
   }
 
   cargarListaUsuarios() {
-    this.spinnerService.setSpinnerType('ball-spin-clockwise'); // ✅ tipo para carga inicial
+    this.spinnerService.setSpinnerType('ball-spin-clockwise'); // tipo para carga inicial
     this.spinner.show();
 
     this.usuarioService.getUsuarios().subscribe({
@@ -122,7 +122,7 @@ export class UsuarioComponent {
       this.form.get('activo').setValue(true);
     }
 
-    // ✅ tipo de spinner para guardar
+    // tipo de spinner para guardar
     this.spinnerService.setSpinnerType('ball-clip-rotate');
     this.spinner.show();
 
