@@ -35,7 +35,7 @@
                   <tbody *ngIf="usuarios.length > 0">
                     <tr *ngFor="let usuario of usuarios">
                       <td>
-                        {{ usuario.nombre }}
+                        {{ usuario.nombre  }}
                       </td>
                       <td>
                         {{ usuario.correo }}
@@ -44,7 +44,7 @@
                         {{ usuario.telefono }}
                       </td>
                       <td>
-                        {{ usuario.fechaRegistro }}
+                        {{ usuario.fechaRegistro | date:'yyyy-MM-dd' }}
                       </td>
                       <td>
                         {{ usuario.activo ? 'Si' : 'No' }}
@@ -87,8 +87,8 @@
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre Completo</label>
-            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
-            [ngModel]="usuarioSelected?.nombre"/>
+            <input type="text" formControlName="nombreUsuario" class="form-control" id="nombre"
+              placeholder="Ingrese el nombre completo" [ngModel]="usuarioSelected?.nombre" />
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre completo es requerido.
             </div>
@@ -96,8 +96,8 @@
         
           <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
-            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" 
-            [ngModel]="usuarioSelected?.correo"/>
+            <input type="email" formControlName="emailUsuario" class="form-control" id="correo"
+              placeholder="Ingrese el correo" [ngModel]="usuarioSelected?.correo" />
             <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
               El correo es requerido.
             </div>

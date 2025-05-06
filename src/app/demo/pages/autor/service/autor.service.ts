@@ -5,5 +5,25 @@ import { Injectable } from '@angular/core';
 })
 export class AutorService {
 
-  constructor() { }
+  constructor(private backendService: BackendService) {
+    this.testService();
+  }
+
+  testService() {
+    this.backendService.get(environment.apiUrlAuth, this.api, "test");
+  }
+
+  getAutores(): Observable<Autor[]> {
+    return this.backendService.get(environment.apiUrlAuth, this.api, "listar");
+  }
+
+  crearAutor(autor: AutorRq): Observable<AutorRs> {
+    return this.backendService.post(environment.apiUrlAuth,
+      this.api, "guardar-autor", autor);
+  }
+
+  actualizarAutor(autor: Autor): Observable<AutorRs> {
+    return this.backendService.post(environment.apiUrlAuth,
+      this.api, "actualizar-autor", autor);
+  }
 }

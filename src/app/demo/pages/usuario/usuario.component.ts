@@ -24,9 +24,10 @@ export class UsuarioComponent {
   accion: string = "";
 
   form: FormGroup = new FormGroup({
-    nombre: new FormControl(''),
-    correo: new FormControl(''),
-    telefono: new FormControl('')
+    nombreUsuario: new FormControl(''),
+    emailUsuario: new FormControl(''),
+    telefono: new FormControl(''),
+    activo: new FormControl('')
   });
 
   constructor(
@@ -40,9 +41,11 @@ export class UsuarioComponent {
 
   cargarFormulario() {
     this.form = this.formBuilder.group({
-      nombre: ['', [Validators.required]],
-      correo: ['', [Validators.required]],
-      telefono: ['', [Validators.required]]
+      id: [null],
+      nombreUsuario: ['', [Validators.required]],
+      emailUsuario: ['', [Validators.required]],
+      telefono: ['', [Validators.required]],
+      activo: ['', [Validators.required]]
     });
   }
 
@@ -54,7 +57,16 @@ export class UsuarioComponent {
     this.usuarioService.getUsuarios().subscribe({
       next: (data) => {
         console.log(data);
-        this.usuarios = data;
+        // Mapeo para adaptar propiedades del backend a las esperadas por la plantilla
+        this.usuarios = data.map((u: any) => ({
+          id: u.id,
+          nombre: u.nombreUsuario,
+          correo: u.emailUsuario,
+          telefono: u.telefono,
+          fechaRegistro: u.fechaRegistro,
+          activo: u.estado 
+        }));
+        this.spinner.hide();
       },
       error: (error) => {
         Swal.fire('Error', error.error.message, 'error');
@@ -82,9 +94,10 @@ export class UsuarioComponent {
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.reset({
-      nombreCompleto: "",
-      correo: "",
-      telefono: ""
+      nombreUsuario: "",
+      emailUsuario: "",
+      telefono: "",
+      activo: ""
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
@@ -93,13 +106,21 @@ export class UsuarioComponent {
 
   abrirModoEdicion(usuario: Usuario) {
     this.usuarioSelected = usuario;
-    this.crearUsuarioModal('E');    
-    console.log(this.usuarioSelected);
+    this.form.patchValue(usuario);
+    this.crearUsuarioModal('E');
+
+    
   }
 
   guardarActualizarUsuario() {
-    console.log('Entro');
-    console.log(this.form.valid);
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo').setValue(true);
+      
+    }
+
+    this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario" : "Actualizando usuario";
+    this.spinner.show();
+
     if (this.form.valid) {
       console.log('El formualario es valido');
       if (this.modoFormulario.includes('C')) {
