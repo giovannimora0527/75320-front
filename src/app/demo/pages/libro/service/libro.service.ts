@@ -15,4 +15,8 @@ export class LibroService {
   getLibros(): Observable<Libro[]> {
     return this.backendService.get(environment.apiUrlAuth, this.api, 'listar');
   }
+
+  getLibrosDisponibles(): Observable<Libro[]> {
+    return this.backendService.get(environment.apiUrlAuth, this.api, 'disponibles');
+  }
 }
