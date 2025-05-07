@@ -1,7 +1,5 @@
-import packageInfo from '../../package.json';
-
 export const environment = {
-  appVersion: packageInfo.version,
+  appVersion: "1.0.0",
   production: false,  
-  apiUrlAuth: 'http://localhost:8000/biblioteca/v1'
+  apiUrl: 'http://localhost:8000/biblioteca/v1'
 };

@@ -12,7 +12,15 @@ export class LibroService {
 
   constructor(private backendService: BackendService) {}
 
+  getLibrosDisponibles(): Observable<Libro[]> {
+    if (!environment.apiUrl) {
+      console.error('Error: environment.apiUrl no está definido en tus archivos de entorno.');
+      throw new Error('La URL base de la API no está configurada.');
+    }
+    return this.backendService.get<Libro[]>(environment.apiUrl, this.api, 'listar-disponibles');
+  }
+
   getLibros(): Observable<Libro[]> {
-    return this.backendService.get(environment.apiUrlAuth, this.api, 'listar');
+    return this.backendService.get<Libro[]>(environment.apiUrl, this.api, 'listar');
   }
 }
