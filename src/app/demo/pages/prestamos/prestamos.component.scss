@@ -1,0 +1,83 @@
+// Fondo general de la aplicación
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #eef3fc; // Azul claro suave
+  }
+  
+  // Contenedor principal
+  h1 {
+    text-align: center;
+    color: #004085; // Azul fuerte
+  }
+  
+  // Botón "Nuevo Préstamo"
+  button {
+    background-color: #007bff; // Azul vibrante
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3; // Azul oscuro al pasar el mouse
+  }
+  
+  // Tabla de préstamos
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); // Sombras para efecto visual moderno
+  }
+  
+  th {
+    background-color: #0069d9;
+    color: white;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  // Resaltado de estados
+  .estado-prestado {
+    background-color: #ffc107; // Amarillo
+    color: black;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .estado-vencido {
+    background-color: #dc3545; // Rojo fuerte
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .estado-devuelto {
+    background-color: #28a745; // Verde
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  // Contenedor de formulario
+  div {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  }
