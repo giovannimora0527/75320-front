@@ -1,3 +1,12 @@
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="pacman"
+  [fullScreen]="true">
+  {{msjSpinner}}...
+</ngx-spinner>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -113,6 +122,14 @@
             <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
               El teléfono es requerido.
             </div>
+          </div>
+
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="activo" class="form-label">Estado</label>
+            <select class="form-select" formControlName="activo">
+               <option [value]="true">Activo</option>
+               <option [value]="false">Inactivo</option>
+            </select>           
           </div>
         </form>
       </div>
