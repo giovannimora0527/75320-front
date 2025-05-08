@@ -40,13 +40,13 @@
                                     </tbody>
                                     <tbody *ngIf="prestamos.length > 0">
                                         <tr *ngFor="let p of prestamos">
-                                            <td>{{p.usuario?.nombreUsuario || 'Sin usuario' }}</td> <!-- Cambio aquí -->
-                                            <td>{{ p.libro?.titulo || 'Sin libro' }}</td> <!-- Cambio aquí -->
-                                            <td>{{ p.fechaPrestamo | date:'yyyy-MM-dd' }}</td> <!-- Cambio aquí -->
-                                            <td>{{ p.fechaDevolucion | date:'yyyy-MM-dd' }}</td> <!-- Cambio aquí -->
+                                            <td>{{p.usuario?.nombreUsuario || 'Sin usuario' }}</td> 
+                                            <td>{{ p.libro?.titulo || 'Sin libro' }}</td> 
+                                            <td>{{ p.fechaPrestamo | date:'yyyy-MM-dd' }}</td> 
+                                            <td>{{ p.fechaDevolucion | date:'yyyy-MM-dd' }}</td> 
                                             <td>{{ p.fechaEntrega ? (p.fechaEntrega | date:'yyyy-MM-dd') : 'Sin
-                                                entregar' }}</td> <!-- Cambio aquí -->
-                                            <td>{{ p.estadoPrestamo}}</td> <!-- Cambio aquí -->
+                                                entregar' }}</td> 
+                                            <td>{{ p.estadoPrestamo}}</td> 
                                             <td class="text-center">
                                                 <button class="btn btn-outline-primary btn-sm" title="Editar entrega"
                                                     (click)="abrirModalEditar(p)">

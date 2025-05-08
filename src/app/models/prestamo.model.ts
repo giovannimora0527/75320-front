@@ -1,7 +1,15 @@
 export interface Prestamo {
-    idPrestamo?: number;
-    idUsuario: number;
-    idLibro: number;
-    fechaPrestamo: string; // ISO format
-    fechaEntrega?: string;
-  }
+  id: number;
+  usuario: {
+    id: number;
+    nombreUsuario: string;
+  };
+  libro: {
+    id: number;
+    titulo: string;
+  };
+  fechaPrestamo: string; // Fecha en formato ISO
+  fechaDevolucion: string;
+  fechaEntrega?: string; // Opcional
+  estadoPrestamo: 'PRESTADO' | 'VENCIDO' | 'DEVUELTO';
+}

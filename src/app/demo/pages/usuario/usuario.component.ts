@@ -16,12 +16,17 @@ declare const bootstrap: any;
   styleUrl: './usuario.component.scss'
 })
 export class UsuarioComponent {
+  spinner: { show: () => void; hide: () => void } = {
+    show: () => console.log('Spinner shown'),
+    hide: () => console.log('Spinner hidden')
+  };
   usuarios: Usuario[] = [];
   modalInstance: any;
   modoFormulario: string = '';
 
   usuarioSelected: Usuario;
   accion: string = "";
+  msjSpinner: string = "";
 
   form: FormGroup = new FormGroup({
     nombreUsuario: new FormControl(''),
@@ -60,8 +65,8 @@ export class UsuarioComponent {
         // Mapeo para adaptar propiedades del backend a las esperadas por la plantilla
         this.usuarios = data.map((u: any) => ({
           id: u.id,
-          nombre: u.nombreUsuario,
-          correo: u.emailUsuario,
+          nombreUsuario: u.nombreUsuario,
+          emailUsuario: u.emailUsuario,
           telefono: u.telefono,
           fechaRegistro: u.fechaRegistro,
           activo: u.estado 
@@ -111,55 +116,58 @@ export class UsuarioComponent {
 
     
   }
-
   guardarActualizarUsuario() {
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
-      
     }
-
+  
     this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario" : "Actualizando usuario";
     this.spinner.show();
-
+  
     if (this.form.valid) {
-      console.log('El formualario es valido');
+      console.log('El formulario es válido');
       if (this.modoFormulario.includes('C')) {
         console.log('Creamos un usuario nuevo');
         this.usuarioService.crearUsuario(this.form.getRawValue())
-        .subscribe(
-          {
-             next: (data) => {               
-               this.cerrarModal();
-               this.messageUtils.showMessage("Éxito", data.message, "success");
-               this.cargarListaUsuarios();
-               this.form.reset();
-               this.form.markAsPristine();
-               this.form.markAsUntouched();
-             },
-             error: (error) => {            
+          .subscribe({
+            next: (data) => {
+              this.cerrarModal();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
+              this.cargarListaUsuarios();
+              this.form.reset();
+              this.form.markAsPristine();
+              this.form.markAsUntouched();
+            },
+            error: (error) => {
               this.messageUtils.showMessage("Error", error.error.message, "error");
-             }
-          }
-        );
+            }
+          });
       } else {
         console.log('Actualizamos un usuario existente');
-        this.usuarioService.actualizarUsuario(this.usuarioSelected)
-        .subscribe(
-          {
-             next: (data) => {               
-               this.cerrarModal();
-               this.messageUtils.showMessage("Éxito", data.message, "success");
-               this.cargarListaUsuarios();
-               this.form.reset();
-               this.form.markAsPristine();
-               this.form.markAsUntouched();
-             },
-             error: (error) => {            
+        const usuarioActualizado: Usuario = {
+          ...this.usuarioSelected, // Mantén las propiedades existentes
+          nombreUsuario: this.form.value.nombreUsuario.trim(),
+          emailUsuario: this.form.value.emailUsuario.trim(),
+          telefono: this.form.value.telefono.trim(),
+          activo: this.form.value.activo
+        };
+  
+        this.usuarioService.actualizarUsuario(usuarioActualizado)
+          .subscribe({
+            next: (data) => {
+              this.cerrarModal();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
+              this.cargarListaUsuarios();
+              this.form.reset();
+              this.form.markAsPristine();
+              this.form.markAsUntouched();
+            },
+            error: (error) => {
               this.messageUtils.showMessage("Error", error.error.message, "error");
-             }
-          }
-        );
+            }
+          });
       }
     }
   }
+  
 }

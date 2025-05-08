@@ -17,7 +17,8 @@ declare const bootstrap: any;
 
 @Component({
   selector: 'app-autor',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule], 
   templateUrl: './autor.component.html',
   styleUrl: './autor.component.scss'
 })
@@ -122,7 +123,7 @@ export class AutorComponent {
     this.autorSelected = null;
   }
 
-  guardarActualizarAutor() {
+  actualizarAutor() {
     
     if (this.form.invalid) {
       this.form.markAllAsTouched();
