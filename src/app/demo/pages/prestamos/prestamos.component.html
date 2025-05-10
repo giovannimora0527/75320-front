@@ -28,11 +28,13 @@
                         </thead>
                         <tbody *ngIf="prestamos.length === 0">
                             <tr>
-                                <td colspan="6" class="text-center">No hay préstamos registrados</td>
+                                <td colspan="7" class="text-center">No hay préstamos registrados</td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="prestamos.length > 0">
                             <tr *ngFor="let prestamo of prestamos">
+                                <td>{{ prestamo.usuario.nombre }}</td>
+                                <td>{{ prestamo.libro.titulo }}</td>
                                 <td>{{ prestamo.fechaPrestamo | date: 'yyyy-MM-dd' }}</td>
                                 <td>{{ prestamo.fechaDevolucion | date: 'yyyy-MM-dd' }}</td>
                                 <td>{{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date: 'yyyy-MM-dd') : 'No
@@ -70,7 +72,10 @@
                         <div *ngIf="modoFormulario === 'C'">
                             <div class="mb-3">
                                 <label for="usuario" class="form-label">Usuario</label>
-                                <input type="text" formControlName="usuario" class="form-control" id="usuario" />
+                                <select class="form-select" formControlName="usuario">
+                                    <option [value]="" disabled>Seleccione una opción</option>
+                                    <option [value]="u.idUsuario" *ngFor="let u of usuarios">{{u.nombre}}</option>
+                                </select>
                                 <div *ngIf="form.get('usuario')?.invalid && form.get('usuario')?.touched"
                                     class="text-danger">
                                     El nombre de usuario es requerido.
@@ -78,20 +83,14 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="categoria" class="form-label">Categoría del libro</label>
-                                <select class="form-select" formControlName="categoria">
+                                <label for="libro" class="form-label">Libros Disponibles</label>
+                                <select class="form-select" formControlName="libro">
                                     <option [value]="" disabled>Seleccione una opción</option>
-                                    <option [value]="1">Novela</option>
-                                    <option [value]="2">Relatos</option>
-                                    <option [value]="3">Misterio</option>
-                                    <option [value]="4">Ficción contemporánea</option>
-                                    <option [value]="5">Romance</option>
-                                    <option [value]="6">Ciencia ficción</option>
-                                    <option [value]="7">Fantasía</option>
+                                    <option [value]="l.idLibro" *ngFor="let l of libros">{{ l.titulo }}</option>
                                 </select>
-                                <div *ngIf="form.get('categoria')?.hasError('required') && form.get('categoria')?.touched"
+                                <div *ngIf="form.get('libro')?.invalid && form.get('libro')?.touched"
                                     class="text-danger">
-                                    La categoría es requerida.
+                                    El libro es requerido.
                                 </div>
                             </div>
 
@@ -120,7 +119,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
-                    <button class="btn btn-primary" (click)="actualizarPrestamo()">Crear</button>
+                    <button class="btn btn-primary"
+                        (click)="modoFormulario === 'C' ? crearPrestamo() : actualizarPrestamo()">
+                        Guardar
+                    </button>
+
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Prestamo } from 'src/app/models/prestamo';
+import { PrestamoRs } from 'src/app/models/prestamo-rs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 
@@ -16,8 +17,8 @@ export class PrestamoService {
     return this.backendService.get(environment.apiUrlAuth, this.api, 'listar');
   }
 
-  crearPrestamo(prestamo: Prestamo): Observable<Prestamo> {
-    return this.backendService.post(environment.apiUrlAuth, this.api, 'guardar-prestamo', prestamo);
+  guardarPrestamo(prestamo: Prestamo): Observable<PrestamoRs> {
+    return this.backendService.post(environment.apiUrlAuth, this.api, "prestar", prestamo)
   }
 
   actualizarPrestamo(prestamo: Prestamo): Observable<Prestamo> {
