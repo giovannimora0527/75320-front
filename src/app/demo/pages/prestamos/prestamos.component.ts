@@ -44,7 +44,7 @@ export class PrestamosComponent {
   buildForm(): FormGroup {
     return this.formBuilder.group({
       usuarioId: ['', Validators.required],
-      libroId: ['', Validators.required],
+      idLibro: ['', Validators.required],
       fechaDevolucion: [''],
       fechaEntrega: ['']
     });
@@ -138,10 +138,14 @@ export class PrestamosComponent {
           console.error('Error al actualizar la entrega:', err);
         }
       });
+    } else {
+      
     }
   }
 
   guardarPrestamo() {
+    console.log(this.form.getRawValue());
+    return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       console.log('Formulario inválido:', this.form.value);

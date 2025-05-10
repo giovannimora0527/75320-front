@@ -3,6 +3,10 @@ import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+import { Prestamo } from 'src/app/models/prestamo.model';
+import { Libro } from 'src/app/models/libro';
+import { Usuario } from 'src/app/models/usuario';
+import { Respuesta } from 'src/app/models/respuesta';
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +17,15 @@ export class PrestamoService {
 
   constructor(private backendService: BackendService) {}
 
-  getPrestamos(): Observable<any[]> {
+  getPrestamos(): Observable<Prestamo[]> {
     return this.backendService.get(environment.apiUrlAuth, this.api, 'listar-prestamo');
   }
 
-  crearPrestamo(data: any): Observable<any> {
+  crearPrestamo(data: any): Observable<Respuesta> {
     return this.backendService.post(environment.apiUrlAuth, this.api, 'crear-prestamo', data);
   }
 
-  actualizarPrestamo(data: any): Observable<any> {
+  actualizarPrestamo(data: any): Observable<Respuesta> {
     return this.backendService.post(environment.apiUrlAuth, this.api, 'actualizar-entrega', data);
   }
 
@@ -33,11 +37,11 @@ export class PrestamoService {
     return this.backendService.put(environment.apiUrlAuth, this.api, 'actualizar-entrega', { params });
   }
 
-  getUsuarios(): Observable<any[]> {
+  getUsuarios(): Observable<Usuario[]> {
     return this.backendService.get(environment.apiUrlAuth, 'usuario', 'listar');
   }
 
-  getLibros(): Observable<any[]> {
+  getLibros(): Observable<Libro[]> {
     return this.backendService.get(environment.apiUrlAuth, 'libro', 'listar');
   }
 }
