@@ -21,17 +21,16 @@
 
 @import 'scss/custom';
 
-
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
-    z-index: 1040 !important; /* Menor que el de SweetAlert2 */
-  }
-  
-  .modal-backdrop {
-    z-index: 1030 !important; /* Menor que el modal */
-  }
-  
-  /* Asegura que SweetAlert2 siempre esté al frente */
-  .swal2-container {
-    z-index: 1060 !important; /* Mayor que el modal (1040) */
-  }
+  z-index: 1040 !important; /* Menor que el de SweetAlert2 */
+}
+
+.modal-backdrop {
+  z-index: 1030 !important; /* Menor que el modal */
+}
+
+/* Asegura que SweetAlert2 siempre esté al frente */
+.swal2-container {
+  z-index: 1060 !important; /* Mayor que el modal (1040) */
+}

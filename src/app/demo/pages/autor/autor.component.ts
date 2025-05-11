@@ -1,33 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormGroup,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators
-} from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { Autor } from 'src/app/models/autor';
 import { AutorService } from './service/autor.service';
+import { Autor } from 'src/app/models/autor';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+// Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-autor',
-  standalone: true,
-  imports: [CommonModule, NgxSpinnerModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './autor.component.html',
   styleUrl: './autor.component.scss'
 })
 export class AutorComponent {
-  msjSpinner: string = '';
+  autores: Autor[] = [];
   modalInstance: any;
   modoFormulario: string = '';
-  accion: string = '';
+  titleModal: string = '';
+  msjSpinner: string = "Cargando";
+
   autorSelected: Autor;
-  autores: Autor[] = [];
 
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
@@ -36,27 +31,12 @@ export class AutorComponent {
   });
 
   constructor(
-    private readonly spinner: NgxSpinnerService,
+    private autorService: AutorService,
     private formBuilder: FormBuilder,
-    private AutorService: AutorService
+    private spinner: NgxSpinnerService
   ) {
+    this.cargarListaAutores();
     this.cargarFormulario();
-    this.cargarAutores();
-  }
-
-  cargarAutores() {
-    this.msjSpinner = 'Cargando autores...';
-    this.spinner.show();
-    this.AutorService.getAutores().subscribe({
-      next: (data) => {
-        this.autores = data;
-        this.spinner.hide();
-      },
-      error: (error) => {
-        console.log(error);
-        this.spinner.hide();
-      }
-    });
   }
 
   cargarFormulario() {
@@ -67,22 +47,38 @@ export class AutorComponent {
     });
   }
 
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  cargarListaAutores() {
+    this.spinner.show();
+    this.autorService.getAutores().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.autores = data;
+        this.spinner.hide();
+      },
+      error: (error) => {
+        Swal.fire('Error', error.error.message, 'error');
+        this.spinner.hide();
+      }
+    });
+  }
+
   crearAutorModal(modoForm: string) {
     this.modoFormulario = modoForm;
-    this.accion = modoForm === 'C' ? 'Crear Autor' : 'Actualizar Autor';
+    this.titleModal = modoForm == 'C' ? 'Crear Autor' : 'Editar Autor';
     const modalElement = document.getElementById('crearAutorModal');
+    modalElement.blur();
+    modalElement.setAttribute('aria-hidden', 'false');
     if (modalElement) {
+      // Verificar si ya existe una instancia del modal
       if (!this.modalInstance) {
         this.modalInstance = new bootstrap.Modal(modalElement);
       }
       this.modalInstance.show();
     }
-  }
-
-  abrirModoEdicion(autor: Autor) {
-    this.autorSelected = autor;
-    this.form.patchValue(autor);
-    this.crearAutorModal('E');
   }
 
   cerrarModal() {
@@ -100,42 +96,78 @@ export class AutorComponent {
     this.autorSelected = null;
   }
 
+  abrirModoEdicion(autor: Autor) {
+    this.crearAutorModal('E');
+    this.autorSelected = autor;
+    this.form.patchValue({
+      nombre: this.autorSelected.nombre,
+      nacionalidad: this.autorSelected.nacionalidad,
+      fechaNacimiento: this.autorSelected.fechaNacimiento
+    });
+  }
+
   guardarActualizarAutor() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+    console.log(this.form.valid);
+    if (this.form.valid) {
+      console.log('El formulario es válido');
+      if (this.modoFormulario.includes('C')) {
+        console.log('Creamos un autor nuevo');
+        this.autorService.guardarAutor(this.form.getRawValue())
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            this.showMessage("Éxito", data.message, "success");
+            this.cargarListaAutores();
+            this.cerrarModal(); 
+          },
+          error: (error) => {
+            console.log(error);
+            this.showMessage("Error", error.error.message, "error");
+          }
+        });
+      } else {
+        console.log('Actualizamos un autor existente');
+        // Actualizar solo los campos específicos
+        const idAutor = this.autorSelected.idAutor;
+        this.autorSelected = {
+          ...this.autorSelected, // Mantener los valores anteriores
+          ...this.form.getRawValue() // Sobrescribir con los valores del formulario
+        };
+        this.autorSelected.idAutor = idAutor;
+        console.log(this.autorSelected);    
+        this.autorService.actualizarAutor(this.autorSelected)
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            this.showMessage("Éxito", data.message, "success");
+            this.cargarListaAutores();
+            this.cerrarModal();             
+          },
+          error: (error) => {
+            console.log(error);
+            this.showMessage("Error", error.error.message, "error");
+          }
+        });
+      }
     }
+  }
 
-    const autor: Autor = {
-      ...this.autorSelected,
-      ...this.form.value
-    };
-
-    this.spinner.show();
-    if (this.modoFormulario === 'C') {
-      this.AutorService.crearAutor(autor).subscribe({
-        next: () => {
-          this.cargarAutores();
-          this.cerrarModal();
-          this.spinner.hide();
-        },
-        error: (err) => {
-          console.error('Error al crear autor', err);
-          this.spinner.hide();
+  public showMessage(title: string, text: string, icon: SweetAlertIcon) {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonText: 'Aceptar',      
+      customClass: {
+        container: 'position-fixed',
+        popup: 'swal-overlay'
+      },
+      didOpen: () => {
+        const swalPopup = document.querySelector('.swal2-popup');
+        if (swalPopup) {
+          (swalPopup as HTMLElement).style.zIndex = '1060';
         }
-      });
-    } else {
-      this.AutorService.actualizarAutor(autor).subscribe({
-        next: () => {
-          this.cargarAutores();
-          this.cerrarModal();
-          this.spinner.hide();
-        },
-        error: (err) => {
-          console.error('Error al actualizar autor', err);
-          this.spinner.hide();
-        }
-      });
-    }
+      }
+    });
   }
 }

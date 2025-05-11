@@ -18,9 +18,9 @@ export const routes: Routes = [
     data: { title: 'Inicio' },
     children: [      
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
-      { path: 'autores', component: AutorComponent, data: { title: 'Autores' }} ,
-      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }}   ,
-      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }}      
+      { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
+      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }} ,
+      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }}     
     ]
   },
   { path: '**', redirectTo: 'inicio' }

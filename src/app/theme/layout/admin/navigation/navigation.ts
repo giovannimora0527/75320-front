@@ -30,7 +30,7 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'autor',
+        id: 'autores',
         title: 'Gestión de Autores',
         type: 'item',
         url: '/inicio/autores',
@@ -38,7 +38,7 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'libro',
+        id: 'libros',
         title: 'Gestión de Libros',
         type: 'item',
         url: '/inicio/libros',
@@ -46,14 +46,13 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'prestamo',
+        id: 'prestamos',
         title: 'Gestión de Prestamos',
         type: 'item',
         url: '/inicio/prestamos',
-        icon: 'feather icon-book',
+        icon: 'feather icon-credit-card',
         classes: 'nav-item'
       }
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
 ];

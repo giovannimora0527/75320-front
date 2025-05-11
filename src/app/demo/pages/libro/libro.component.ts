@@ -1,70 +1,93 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { Libro } from 'src/app/models/libro';
 import { LibroService } from './service/libro.service';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { Autor } from 'src/app/models/autor';
+import { AutorService } from '../autor/service/autor.service';
+
 declare const bootstrap: any;
 
 @Component({
   selector: 'app-libro',
   standalone: true,
-  imports: [CommonModule, NgxSpinnerModule, FormsModule, ReactiveFormsModule],
+  imports: [NgxSpinnerModule, ReactiveFormsModule, NgxSpinnerModule, FormsModule, CommonModule],
   templateUrl: './libro.component.html',
   styleUrl: './libro.component.scss'
 })
 export class LibroComponent {
-  msjSpinner: string = "";
+  msjSpinner: string = '';
   modalInstance: any;
   modoFormulario: string = '';
-  accion: string = "";
+  titleModal: string = '';
+
   libroSelected: Libro;
+
   libros: Libro[] = [];
+  autores: Autor[] = [];
 
   form: FormGroup = new FormGroup({
-      titulo: new FormControl(''),
-      anioPublicacion: new FormControl(''),
-      autorId: new FormControl(''),
-      categoria: new FormControl(''),
-      existencias: new FormControl('')
-    });
+    titulo: new FormControl(''),
+    autorId: new FormControl(''),
+    anioPublicacion: new FormControl(''),
+    categoriaId: new FormControl(''),
+    existencias: new FormControl('')
+  });
 
-  constructor(private readonly spinner: NgxSpinnerService,
-     private formBuilder: FormBuilder,
-     private libroService: LibroService
+  constructor(
+    private readonly libroService: LibroService,
+    private readonly spinner: NgxSpinnerService,
+    private readonly formBuilder: FormBuilder,
+    private readonly autorService: AutorService
   ) {
+    this.getLibros();
     this.cargarFormulario();
-    this.cargarLibros();
+    this.getAutores();
   }
 
-  cargarLibros() {
-    this.libroService.getLibros().subscribe(
+  getAutores() {
+    this.autorService.getAutores().subscribe(
       {
-        next: (data) => {
-          console.log(data);
-          this.libros = data;
+        next: (data) => {         
+          this.autores = data;
         },
         error: (error) => {
           console.log(error);
-        }
+        },
       }
     );
   }
 
   cargarFormulario() {
-      this.form = this.formBuilder.group({
-        titulo: ['', [Validators.required]],
-        anioPublicacion: ['', [Validators.required]],
-        autorId: ['', [Validators.required]],
-        categoria: ['', [Validators.required]],
-        existencias: ['', [Validators.required]]
-      });
-    }
+    this.form = this.formBuilder.group({
+      titulo: ['', [Validators.required]],
+      autorId: ['', [Validators.required]],
+      anioPublicacion: ['', [Validators.required]],
+      categoriaId: [true, [Validators.required]],
+      existencias: [true, [Validators.required]],
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  getLibros() {
+    this.libroService.getLibros().subscribe({
+      next: (data) => {        
+        this.libros = data;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
 
   crearModal(modoForm: string) {
     this.modoFormulario = modoForm;
-    this.accion = modoForm == 'C'? "Crear Libro": "Actualizar Libro";
+    this.titleModal = modoForm == 'C' ? 'Crear Libro' : 'Editar Libro';
     const modalElement = document.getElementById('crearModal');
     modalElement.blur();
     modalElement.setAttribute('aria-hidden', 'false');
@@ -77,26 +100,29 @@ export class LibroComponent {
     }
   }
 
-   abrirModoEdicion(libro: Libro) {
-      this.libroSelected = libro;
-      this.form.patchValue(libro);
-      this.crearModal('E');  
-    }
+  abrirModoEdicion(libro: Libro) {
+    this.crearModal('E');
+    this.libroSelected = libro; 
+  }
 
-    cerrarModal() { 
-      this.form.reset();
-      this.form.markAsPristine();
-      this.form.markAsUntouched();
-      this.form.reset({
-        titulo: '',
-        anioPublicacion: '',
-        autorId: '',
-        categoria: '',
-        existencias: ''
-      });
-      if (this.modalInstance) {
-        this.modalInstance.hide();
-      }
-      this.libroSelected = null;
+  cerrarModal() {
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      titulo: '',
+      autorId: '',
+      anioPublicacion: '',
+      categoriaId: '',
+      existencias: '',
+    });
+    if (this.modalInstance) {
+      this.modalInstance.hide();
     }
+    this.libroSelected = null;
+  }
+
+  guardarActualizar() {
+    console.log("Entro a guardar o actualizar");
+  }
 }

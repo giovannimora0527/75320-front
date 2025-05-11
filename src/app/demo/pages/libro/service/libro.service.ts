@@ -8,11 +8,17 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LibroService {
-  private api = `libro`;
 
-  constructor(private backendService: BackendService) {}
+  private readonly api = `libro`;
+  
+  constructor(private readonly backendService: BackendService) { 
+   
+  }
 
   getLibros(): Observable<Libro[]> {
-    return this.backendService.get(environment.apiUrlAuth, this.api, 'listar');
+    return this.backendService.get(environment.apiUrl, this.api, "listar");
+  }
+  getLibrosDisponibles(): Observable<Libro[]> {
+    return this.backendService.get(environment.apiUrl, this.api, "listar-disponibles");
   }
 }

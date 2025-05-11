@@ -2,17 +2,16 @@
   bdColor="rgba(51,51,51,0.8)"
   size="medium"
   color="#fff"
-  type="pacman"
+  type="ball-scale-multiple"
   [fullScreen]="true">
   {{msjSpinner}}...
 </ngx-spinner>
-
 <div class="container">
   <div class="card">
     <div class="card-header">
       <div class="row">
         <div class="col">
-          <button class="btn btn-outline-primary" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
           </button>
@@ -59,10 +58,8 @@
                         {{ usuario.activo ? 'Si' : 'No' }}
                       </td>
                       <td class="text-center">
-                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario"
-                        (click)="abrirModoEdicion(usuario)">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario" (click)="abrirModoEdicion(usuario)">
                           <i class="fa fa-edit"></i>
-                          &nbsp;Editar
                         </button>
                       </td>
                     </tr>
@@ -77,36 +74,41 @@
   </div>
 </div>
 
-<!-- Modal crear/actualizar usuarios -->
 <div
   class="modal fade"
   id="crearUsuarioModal"
   tabindex="-1"
-  aria-labelledby="crearUsuarioModalLabel" 
+  aria-labelledby="crearUsuarioModalLabel"
   data-bs-backdrop="static"
   data-bs-keyboard="false"
 >
-  <div class="modal-dialog modal-md">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="crearUsuarioModalLabel">{{accion}}</h5>
+        <h5 class="modal-title" id="crearUsuarioModalLabel">{{ titleModal }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre Completo</label>
-            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
-            [ngModel]="usuarioSelected?.nombre"/>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre completo"
+              [ngModel]="usuarioSelected?.nombre"
+            />
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre completo es requerido.
             </div>
           </div>
-        
+
           <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
-            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" 
-            [ngModel]="usuarioSelected?.correo"/>
+            <input type="email" formControlName="correo" class="form-control" id="correo"
+             placeholder="Ingrese el correo" [ngModel]="usuarioSelected?.correo"/>
             <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
               El correo es requerido.
             </div>
@@ -114,7 +116,7 @@
               El formato del correo no es válido.
             </div>
           </div>
-        
+
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono</label>
             <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
@@ -126,16 +128,17 @@
 
           <div class="mb-3" *ngIf="modoFormulario === 'E'">
             <label for="activo" class="form-label">Estado</label>
-            <select class="form-select" formControlName="activo">
-               <option [value]="true">Activo</option>
-               <option [value]="false">Inactivo</option>
-            </select>           
+            <select class="form-select" id="activo"
+            formControlName="activo">              
+              <option [value]="true">Activo</option>
+              <option [value]="false">Inactivo</option>
+            </select>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">{{accion}}</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">Guardar</button>
       </div>
     </div>
   </div>
