@@ -60,56 +60,62 @@
     </div>
   
     <!-- Modal crear/actualizar préstamo -->
-    <div class="modal fade" id="modalPrestamo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-md">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">
-                {{ modoFormulario === 'C' ? 'Registrar Préstamo' : 'Editar Préstamo' }}
-              </h5>
-              <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form [formGroup]="form">
-                <div *ngIf="modoFormulario === 'C'" class="mb-3">
-                  <label class="form-label">Libro</label>
-                  <select class="form-select" formControlName="libro" [disabled]="libros.length === 0">
-                    <option [ngValue]="null">Seleccione un libro</option>
-                    <option *ngFor="let libro of libros" [ngValue]="libro">{{ libro.titulo }}</option>
-                  </select>
-                </div>
-      
-                <div *ngIf="modoFormulario === 'C'" class="mb-3">
-                  <label class="form-label">Usuario</label>
-                  <select class="form-select" formControlName="usuario">
-                    <option [ngValue]="null">Seleccione un usuario</option>
-                    <option *ngFor="let usuario of usuarios" [ngValue]="usuario">{{ usuario.nombre }}</option>
-                  </select>
-                </div>
-      
-                <div *ngIf="modoFormulario === 'C'" class="mb-3">
-                  <label class="form-label">Fecha Devolución</label>
-                  <input type="date" class="form-control" formControlName="fechaDevolucion" />
-                  <div *ngIf="form.get('fechaDevolucion')?.errors?.['invalidDate'] && form.get('fechaDevolucion')?.touched" class="text-danger">
-                    La fecha de devolución no puede ser menor que la de préstamo.
-                  </div>
-                </div>
-      
-                <div *ngIf="modoFormulario === 'EE'" class="mb-3">
-                  <label class="form-label">Fecha de entrega</label>
-                  <input type="date" class="form-control" formControlName="fechaEntrega" />
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
-              <button *ngIf="modoFormulario === 'C'" class="btn btn-primary" (click)="guardar()" [disabled]="form.invalid">
-                Guardar
-              </button>
-              <button *ngIf="modoFormulario === 'EE'" class="btn btn-primary" (click)="guardar()" [disabled]="form.get('fechaEntrega')?.invalid">
-                Editar Préstamo
-              </button>
-            </div>
-          </div>
+<div class="modal fade" id="modalPrestamo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ modoFormulario === 'C' ? 'Registrar Préstamo' : 'Editar Préstamo' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
         </div>
-      </div>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <!-- Campo Libro -->
+            <div *ngIf="modoFormulario === 'C'" class="mb-3">
+              <label class="form-label">Libro</label>
+              <select class="form-select" formControlName="libro" [disabled]="libros.length === 0">
+                <option [value]="''">Seleccione un libro</option>
+                <option *ngFor="let libro of librosDisponibles" [ngValue]="libro">
+                  {{ libro.titulo }} (Disponibles: {{ libro.existencias }})
+                </option>
+              </select>
+            </div>
+  
+            <!-- Campo Usuario (solo visible en modo Crear) -->
+<div *ngIf="modoFormulario === 'C'" class="mb-3">
+  <label class="form-label">Usuario</label>
+  <select class="form-select" formControlName="usuario">
+    <option [value]="''">Seleccione un usuario</option>
+    <option *ngFor="let usuario of usuarios" [ngValue]="usuario">{{ usuario.nombre }}</option>
+  </select>
+</div>
+
+<!-- Campo Fecha Devolución (solo visible en modo Crear) -->
+<div *ngIf="modoFormulario === 'C'" class="mb-3">
+  <label class="form-label">Fecha Devolución</label>
+  <input type="date" class="form-control" formControlName="fechaDevolucion" />
+  <div *ngIf="form.get('fechaDevolucion')?.errors?.['invalidDate'] && form.get('fechaDevolucion')?.touched" class="text-danger">
+    La fecha de devolución no puede ser menor que la de préstamo.
+  </div>
+</div>
+
+<!-- Campo Fecha Entrega (solo visible en modo Editar Entrega) -->
+<div *ngIf="modoFormulario === 'EE'" class="mb-3">
+  <label class="form-label">Fecha de entrega</label>
+  <input type="date" class="form-control" formControlName="fechaEntrega" />
+</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+          <button *ngIf="modoFormulario === 'C'" class="btn btn-primary" (click)="guardar()" [disabled]="form.invalid">
+            Guardar
+          </button>
+          <button *ngIf="modoFormulario === 'EE'" class="btn btn-primary" (click)="guardar()" [disabled]="form.get('fechaEntrega')?.invalid">
+            Editar Préstamo
+          </button>
+        </div>
+        </form>
+        </div> 
+        </div>
+        </div> 
+        </div>

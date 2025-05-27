@@ -1,0 +1,37 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    
+    <div class="p-3">
+      <h4 class="titulo-seccion mb-0">
+        <i class="fa fa-upload me-2"></i> Cargar archivo CSV
+      </h4>
+    </div>
+
+    <div class="card-body">
+      <form (submit)="onUpload()" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="tipoArchivo" class="form-label">Tipo de archivo</label>
+          <select id="tipoArchivo" class="form-select" [(ngModel)]="tipoArchivo" name="tipoArchivo" required>
+            <option value="" disabled selected>Seleccione tipo de archivo</option>
+            <option value="usuarios">Usuarios</option>
+            <option value="autores">Autores</option>
+            <option value="libros">Libros</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="csvFile" class="form-label">Archivo CSV</label>
+          <input type="file" id="csvFile" class="form-control" (change)="onFileSelected($event)" accept=".csv" />
+        </div>
+
+        <button type="submit" class="btn btn-success" [disabled]="!selectedFile || !tipoArchivo">
+          <i class="fa fa-upload"></i> Cargar
+        </button>
+      </form>
+
+      <div class="mt-3">
+        <p *ngIf="mensaje" class="alert alert-info">{{ mensaje }}</p>
+      </div>
+    </div>
+  </div>
+</div>

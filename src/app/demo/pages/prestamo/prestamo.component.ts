@@ -27,10 +27,13 @@ declare const bootstrap: any;
   templateUrl: './prestamo.component.html',
   styleUrl: './prestamo.component.scss'
 })
+
+
 export class PrestamoComponent {
   prestamos: Prestamo[] = [];
   usuarios: Usuario[] = [];
   libros: Libro[] = [];
+  librosDisponibles: Libro[] = [];
   prestamoSelected!: Prestamo;
   modoFormulario: string = '';
   modalInstance: any;
@@ -41,6 +44,7 @@ export class PrestamoComponent {
     fechaPrestamo: new FormControl(''),
     fechaDevolucion: new FormControl('', Validators.required),
     fechaEntrega: new FormControl(''),
+    
   });
 
   constructor(
@@ -61,6 +65,11 @@ export class PrestamoComponent {
 
   private formatDateToLocalDateTime(date: Date): string {
     return date.toISOString().slice(0, 19);
+  }
+
+  private formatFecha(fecha: string | Date): string {
+    const d = new Date(fecha);
+    return d.toISOString().split('T')[0]; // Devuelve "YYYY-MM-DD"
   }
 
   dateFromString(fecha: string): Date {
@@ -90,10 +99,10 @@ export class PrestamoComponent {
 
   cargarFormulario(): void {
     this.form = this.formBuilder.group({
-      libro: [{ value: '', disabled: this.modoFormulario === 'EE' }, Validators.required],
-      usuario: [{ value: '', disabled: this.modoFormulario === 'EE' }, Validators.required],
+      libro: ['', Validators.required],
+      usuario: ['', Validators.required],
       fechaPrestamo: [new Date()],
-      fechaDevolucion: [{ value: '', disabled: this.modoFormulario === 'EE' }, Validators.required],
+      fechaDevolucion: ['', Validators.required],
       fechaEntrega: ['']
     }, {
       validators: this.fechaDevolucionMayorQuePrestamo('fechaPrestamo', 'fechaDevolucion')
@@ -113,33 +122,34 @@ export class PrestamoComponent {
 
   cerrarModal(): void {
     this.form.reset();
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-    this.form.reset({
-      libro: '',
-      usuario: '',
-      fechaPrestamo: '',
-      fechaDevolucion: '',
-      fechaEntrega: ''
-    });
+    // Habilitar todos los campos nuevamente
+    this.form.get('libro')?.enable();
+    this.form.get('usuario')?.enable();
+    this.form.get('fechaDevolucion')?.enable();
+    
+    // Restaurar validaciones originales
+    this.cargarFormulario();
+    
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
   }
 
   guardar(): void {
-    if (!this.form.valid) {
-      Swal.fire('Error', 'Formulario no válido', 'error');
-      return;
-    }
-  
     if (this.modoFormulario === 'C') {
+      if (!this.form.valid) {
+        Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+        return;
+      }
       this.crearPrestamo();
-    } else if (this.modoFormulario === 'E') {
+    } else if (this.modoFormulario === 'EE') {
+      if (this.form.get('fechaEntrega')?.invalid) {
+        Swal.fire('Error', 'La fecha de entrega es requerida', 'error');
+        return;
+      }
       this.editarPrestamo();
     }
   }
-
   crearPrestamo(): void {
     const prestamo: Prestamo = {
         libro: this.form.value.libro,  
@@ -162,10 +172,16 @@ export class PrestamoComponent {
   }
 
   editarPrestamo(): void {
-    const prestamoEditado: PrestamoRq = {
-      fechaEntrega: this.formatDateToLocalDateTime(new Date(this.form.value.fechaEntrega)),
-  };
+    if (!this.prestamoSelected || !this.prestamoSelected.idPrestamo) {
+      Swal.fire('Error', 'No se encontró el préstamo a editar', 'error');
+      return;
+    }
   
+    const prestamoEditado: PrestamoRq = {
+      idPrestamo: this.prestamoSelected.idPrestamo, // 👈🏼 Se agrega el ID
+      fechaEntrega: this.formatDateToLocalDateTime(new Date(this.form.value.fechaEntrega)),
+    };
+    
     this.prestamoService.guardarPrestamo(prestamoEditado).subscribe({
       next: () => {
         this.cargarListaPrestamos();
@@ -177,11 +193,18 @@ export class PrestamoComponent {
   }
 
   abrirModoEdicion(prestamo: Prestamo): void {
-    this.modoFormulario = 'EE'; // 'EE' para 'Editar Entrega'
+    this.modoFormulario = 'EE';
     this.prestamoSelected = prestamo;
+  
+    // Activar y validar solo el campo fechaEntrega
+    this.form.get('fechaEntrega')?.setValidators([Validators.required]);
+    this.form.get('fechaEntrega')?.updateValueAndValidity();
+  
+    // Establecer el valor actual de fechaEntrega si ya existe
     this.form.patchValue({
-      fechaEntrega: prestamo.fechaEntrega
+      fechaEntrega: prestamo.fechaEntrega ? this.formatFecha(prestamo.fechaEntrega) : ''
     });
+  
     this.crearPrestamoModal(this.modoFormulario);
   }
 
@@ -201,8 +224,13 @@ export class PrestamoComponent {
 
   cargarLibros(): void {
     this.libroService.getLibrosDisponibles().subscribe({
-      next: (data) => this.libros = data,
-      error: (error) => Swal.fire('Error', error.error.message, 'error')
+      next: (data) => {
+        this.libros = data;
+        this.librosDisponibles = data.filter(libro => libro.existencias > 0);
+      },
+      error: (err) => {
+        Swal.fire('Error', 'No se pudieron cargar los libros disponibles', 'error');
+      }
     });
   }
 

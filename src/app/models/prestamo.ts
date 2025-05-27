@@ -2,7 +2,7 @@ import { Libro } from "./libro";
 import { Usuario } from "./usuario";
 
 export interface Prestamo {
-    id?: number;
+    idPrestamo?: number;
     usuario: Usuario;
     libro: Libro;
     fechaPrestamo: string;

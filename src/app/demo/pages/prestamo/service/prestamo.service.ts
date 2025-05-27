@@ -21,7 +21,7 @@ export class PrestamoService {
 
   // Obtener préstamo por ID
   obtenerPrestamoPorId(id: number): Observable<Prestamo> {
-    const params = new HttpParams().set('prestamoId', id.toString());
+    const params = new HttpParams().set('id_prestamo', id.toString());
     return this.backendService.get(environment.apiUrlAuth, this.api, 'listar-prestamo-id', params);
   }
 

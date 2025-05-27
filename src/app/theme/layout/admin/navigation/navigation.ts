@@ -52,6 +52,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/prestamos',
         icon: 'feather icon-book',
         classes: 'nav-item'
+      },
+      {
+        id: 'csv',
+        title: 'Cargar CSV',
+        type: 'item',
+        url: '/inicio/csv',
+        icon: 'feather icon-upload',  // puedes cambiar el ícono si deseas
+        classes: 'nav-item'
       }
     ]
   },
