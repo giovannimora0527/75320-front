@@ -6,42 +6,32 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class BackendService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  construirHeader() {
-    // Aqui obtenemos el token desde el local storage
-    const tokenRecuperado = localStorage.getItem('token');
-    if (tokenRecuperado != '') {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-        Authorization: 'Bearer ' + tokenRecuperado,
-      });
-      return headers;
-    } else {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-      });
-      return headers;
+  // Método reutilizable para obtener headers con token
+  private getAuthHeaders(contentType: string | null = 'application/json'): HttpHeaders {
+    const token = localStorage.getItem('token') || '';
+    const headersConfig: any = {
+      Authorization: token ? `Bearer ${token}` : '',
+    };
+
+    if (contentType) {
+      headersConfig['Content-Type'] = contentType;
     }
+
+    return new HttpHeaders(headersConfig);
   }
+
   get<T>(
     urlApi: string,
     endpoint: string,
     service: string,
     routerParams?: HttpParams
-  ) {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
+  ): Observable<T> {
+    const headers = this.getAuthHeaders();
     return this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
       params: routerParams,
-      headers: headers,
+      headers,
       withCredentials: true,
     });
   }
@@ -49,17 +39,12 @@ export class BackendService {
   post<T>(
     urlApi: string,
     endpoint: string,
-    service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      service: string,
     data: any
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
+    const headers = this.getAuthHeaders();
     return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
-      headers: headers,
+      headers,
       withCredentials: true,
     });
   }
@@ -67,36 +52,24 @@ export class BackendService {
   put<T>(
     urlApi: string,
     endpoint: string,
-    service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      service: string,
     data: any
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
+    const headers = this.getAuthHeaders();
     return this.http.put<T>(`${urlApi}/${endpoint}/${service}`, data, {
-      headers: headers,
+      headers,
+      withCredentials: true,
     });
-  }
-
-
-
+    }
   postFile<T>(
     urlApi: string,
     endpoint: string,
     service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: FormData
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      mimeType: 'multipart/form-data',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
+    const headers = this.getAuthHeaders(null);
     return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
-      headers: headers,
+      headers,
       withCredentials: true,
     });
   }
