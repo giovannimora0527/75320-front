@@ -47,7 +47,11 @@ export class BreadcrumbsComponent {
         const activeLink = router.url;
         const breadcrumbList = this.filterNavigation(this.navigations, activeLink);
         this.navigationList = breadcrumbList;
+<<<<<<< HEAD
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
+=======
+        const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Bienvenido';
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         this.titleService.setTitle('Biblioteca - Uniminuto | ' + title);
       }
     });

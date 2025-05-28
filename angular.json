@@ -33,7 +33,11 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap/scss/bootstrap.scss",
+<<<<<<< HEAD
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+=======
+              "node_modules/ngx-spinner/animations/pacman.css",
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
               "src/styles.scss"
             ],
             "scripts": [

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <ngx-spinner
   bdColor="rgba(51,51,51,0.8)"
   size="medium"
@@ -6,6 +7,12 @@
   [fullScreen]="true">
   {{msjSpinner}}...
 </ngx-spinner>
+=======
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true">
+  {{ msjSpinner }}...
+</ngx-spinner>
+
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -15,6 +22,13 @@
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
           </button>
+<<<<<<< HEAD
+=======
+          <button class="btn btn-outline-primary btn-sm" (click)="abrirCargarModal()" title="Cargar Autores masivos">
+            <i class="fa fa-file"></i>
+            &nbsp;Cargar
+          </button>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         </div>
       </div>
     </div>
@@ -28,8 +42,13 @@
                   <thead>
                     <tr>
                       <th>Nombre</th>
+<<<<<<< HEAD
                       <th>Nacionalidad</th>
                       <th>Fecha de nacimiento</th>
+=======
+                      <th>Fecha de Nacimiento</th>
+                      <th>Nacionalidad</th>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
                       <th class="text-center">Opciones</th>
                     </tr>
                   </thead>
@@ -44,6 +63,7 @@
                         {{ autor.nombre }}
                       </td>
                       <td>
+<<<<<<< HEAD
                         {{ autor.nacionalidad }}
                       </td>
                       <td>
@@ -51,6 +71,16 @@
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar autor" (click)="abrirModoEdicion(autor)">
+=======
+                        {{ autor.fechaNacimiento | date:'yyyy-MM-dd' }}
+                      </td>
+                      <td>
+                        {{ autor.nacionalidad?.nombre }}
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar autor"
+                          (click)="abrirModoEdicion(autor)">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
                           <i class="fa fa-edit"></i>
                         </button>
                       </td>
@@ -66,6 +96,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <div
   class="modal fade"
   id="crearAutorModal"
@@ -74,6 +105,11 @@
   data-bs-backdrop="static"
   data-bs-keyboard="false"
 >
+=======
+<!-- Modal crear/editar autor -->
+<div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -84,6 +120,7 @@
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
+<<<<<<< HEAD
             <input
               type="text"
               formControlName="nombre"
@@ -94,10 +131,17 @@
             />
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre es requerido.
+=======
+            <input type="text" formControlName="nombre" class="form-control" id="nombre"
+              placeholder="Ingrese el nombre del autor" [ngModel]="autorSelected?.nombre" />
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre del autor es requerido.
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
             </div>
           </div>
 
           <div class="mb-3">
+<<<<<<< HEAD
             <label for="nacionalidad" class="form-label">Nacionalidad</label>
             <input type="text" formControlName="nacionalidad" class="form-control" id="nacionalidad"
              placeholder="Ingrese la nacionalidad" [ngModel]="autorSelected?.nacionalidad"/>
@@ -111,15 +155,74 @@
             <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento"
              [ngModel]="autorSelected?.fechaNacimiento"/>
             <div *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched" class="text-danger">
+=======
+            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento"
+              [ngModel]="autorSelected?.fechaNacimiento" />
+            <div *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched"
+              class="text-danger">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
               La fecha de nacimiento es requerida.
             </div>
           </div>
 
+<<<<<<< HEAD
+=======
+          <div class="mb-3">
+            <label for="nacionalidadId" class="form-label">Nacionalidad</label>
+            <select class="form-select" formControlName="nacionalidadId" id="nacionalidadId">
+              <option [ngValue]="null" disabled>Seleccione una nacionalidad</option>
+              <option *ngFor="let n of nacionalidades" [ngValue]="n.nacionalidadId">{{ n.nombre }}</option>
+            </select>
+            <div *ngIf="form.get('nacionalidadId')?.hasError('required') && form.get('nacionalidadId')?.touched"
+              class="text-danger">
+              La nacionalidad es requerida.
+            </div>
+          </div>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+<<<<<<< HEAD
         <button type="button" class="btn btn-primary" (click)="guardarActualizarAutor()">Guardar</button>
+=======
+        <button type="button" class="btn btn-primary" (click)="guardarAutor()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cargar autores -->
+<div class="modal fade" id="cargarAutorModal" tabindex="-1" aria-labelledby="cargarAutorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cargarAutorModalLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="archivoAutores" class="form-label">Seleccionar archivo CSV</label>
+              <input type="file" class="form-control" id="archivoAutores" (change)="onFileChange($event)"
+                accept=".csv" />
+              <div class="form-text">Seleccione un archivo CSV con los autores a cargar</div>
+              <div class="form-text">El archivo debe contener las columnas: nombre, fechaNacimiento (YYYY-MM-DD),
+                nacionalidad</div>
+            </div>
+            <div *ngIf="archivoCsv" class="alert alert-info mt-3">
+              Archivo seleccionado: {{ archivoCsv.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="cargarAutoresDesdeCsv()"
+          [disabled]="!archivoCsv">Cargar</button>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
       </div>
     </div>
   </div>

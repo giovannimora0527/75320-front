@@ -20,4 +20,8 @@ describe('AutorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 3098747 (Frontend ultima entrega semestre)

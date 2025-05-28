@@ -14,6 +14,10 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -30,6 +34,7 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
+<<<<<<< HEAD
         id: 'autores',
         title: 'Gestión de Autores',
         type: 'item',
@@ -39,6 +44,17 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'libros',
+=======
+        id: 'autor',
+        title: 'Gestión de Autores',
+        type: 'item',
+        url: '/inicio/autores',
+        icon: 'feather icon-home',
+        classes: 'nav-item'
+      },
+      {
+        id: 'libro',
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         title: 'Gestión de Libros',
         type: 'item',
         url: '/inicio/libros',
@@ -46,13 +62,25 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
+<<<<<<< HEAD
         id: 'prestamos',
         title: 'Gestión de Prestamos',
         type: 'item',
         url: '/inicio/prestamos',
         icon: 'feather icon-credit-card',
+=======
+        id: 'prestamo',
+        title: 'Gestión de Prestamos',
+        type: 'item',
+        url: '/inicio/prestamos',
+        icon: 'feather icon-users',
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         classes: 'nav-item'
       }
     ]
   },
+<<<<<<< HEAD
+=======
+  /* ---------- Nuevos menus aqui -------------  */  
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
 ];

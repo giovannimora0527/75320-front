@@ -13,4 +13,8 @@ describe('AutorService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 3098747 (Frontend ultima entrega semestre)

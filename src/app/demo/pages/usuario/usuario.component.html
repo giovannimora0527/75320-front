@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <ngx-spinner
   bdColor="rgba(51,51,51,0.8)"
   size="medium"
@@ -6,15 +7,33 @@
   [fullScreen]="true">
   {{msjSpinner}}...
 </ngx-spinner>
+=======
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true">
+  {{ msjSpinner }}...
+</ngx-spinner>
+
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
 <div class="container">
   <div class="card">
     <div class="card-header">
       <div class="row">
         <div class="col">
+<<<<<<< HEAD
           <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
           </button>
+=======
+          <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal('C')"
+            title="Crear un usuario nuevo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+          <button class="btn btn-outline-primary btn-sm" (click)="abrirCargarModal()" title="Cargar usuarios masivos">
+            <i class="fa fa-file"></i>
+            &nbsp;Cargar
+          </button>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
         </div>
       </div>
     </div>
@@ -31,7 +50,11 @@
                       <th>Correo</th>
                       <th>Teléfono</th>
                       <th>Fecha de registro</th>
+<<<<<<< HEAD
                       <th>Estado</th>
+=======
+                      <th class="text-center">Estado</th>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
                       <th class="text-center">Opciones</th>
                     </tr>
                   </thead>
@@ -52,6 +75,7 @@
                         {{ usuario.telefono }}
                       </td>
                       <td>
+<<<<<<< HEAD
                         {{ usuario.fechaRegistro }}
                       </td>
                       <td>
@@ -59,6 +83,17 @@
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar usuario" (click)="abrirModoEdicion(usuario)">
+=======
+                        {{ usuario.fechaRegistro | date: 'yyyy-MM-dd HH:mm' }}
+                      </td>
+                      <td class="text-center">
+                        <i *ngIf="usuario.activo" class="fa fa-check" style="color: green"></i>
+                        <i *ngIf="!usuario.activo" class="fa fa-times" style="color: red"></i>
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario"
+                          (click)="abrirModoEdicion(usuario)">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
                           <i class="fa fa-edit"></i>
                         </button>
                       </td>
@@ -73,6 +108,7 @@
     </div>
   </div>
 </div>
+<<<<<<< HEAD
 
 <div
   class="modal fade"
@@ -82,6 +118,11 @@
   data-bs-backdrop="static"
   data-bs-keyboard="false"
 >
+=======
+<!-- Modal crear/actualizar usuario -->
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel"
+  aria-hidden="true">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -92,6 +133,7 @@
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre Completo</label>
+<<<<<<< HEAD
             <input
               type="text"
               formControlName="nombre"
@@ -100,6 +142,10 @@
               placeholder="Ingrese el nombre completo"
               [ngModel]="usuarioSelected?.nombre"
             />
+=======
+            <input type="text" formControlName="nombre" class="form-control" id="nombre"
+              placeholder="Ingrese el nombre completo" [ngModel]="usuarioSelected?.nombre" />
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre completo es requerido.
             </div>
@@ -108,7 +154,11 @@
           <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
             <input type="email" formControlName="correo" class="form-control" id="correo"
+<<<<<<< HEAD
              placeholder="Ingrese el correo" [ngModel]="usuarioSelected?.correo"/>
+=======
+              placeholder="Ingrese el correo" [ngModel]="usuarioSelected?.correo" />
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
             <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
               El correo es requerido.
             </div>
@@ -119,17 +169,28 @@
 
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono</label>
+<<<<<<< HEAD
             <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
             [ngModel]="usuarioSelected?.telefono"/>
             <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+=======
+            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+              placeholder="Ingrese el teléfono" [ngModel]="usuarioSelected?.telefono" />
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched"
+              class="text-danger">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
               El teléfono es requerido.
             </div>
           </div>
 
           <div class="mb-3" *ngIf="modoFormulario === 'E'">
             <label for="activo" class="form-label">Estado</label>
+<<<<<<< HEAD
             <select class="form-select" id="activo"
             formControlName="activo">              
+=======
+            <select class="form-control" formControlName="activo">
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
               <option [value]="true">Activo</option>
               <option [value]="false">Inactivo</option>
             </select>
@@ -142,4 +203,40 @@
       </div>
     </div>
   </div>
+<<<<<<< HEAD
+=======
+</div>
+
+<!-- Modal cargar usuarios -->
+<div class="modal fade" id="cargarUsuarioModal" tabindex="-1" aria-labelledby="cargarUsuarioModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cargarUsuarioModalLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="archivoUsuarios" class="form-label">Seleccionar archivo CSV</label>
+              <input type="file" class="form-control" id="archivoUsuarios" (change)="onFileChange($event)"
+                accept=".csv" />
+              <div class="form-text">Seleccione un archivo CSV con los usuarios a cargar</div>
+            </div>
+            <div *ngIf="archivoCsv" class="alert alert-info mt-3">
+              Archivo seleccionado: {{ archivoCsv.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="cargarUsuariosDesdeCsv()"
+          [disabled]="!archivoCsv">Cargar</button>
+      </div>
+    </div>
+  </div>
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
 </div>

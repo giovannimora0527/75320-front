@@ -19,8 +19,13 @@ export const routes: Routes = [
     children: [      
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
       { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
+<<<<<<< HEAD
       { path: 'libros', component: LibroComponent, data: { title: 'Libros' }} ,
       { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }}     
+=======
+      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }},
+      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }},
+>>>>>>> 3098747 (Frontend ultima entrega semestre)
     ]
   },
   { path: '**', redirectTo: 'inicio' }
