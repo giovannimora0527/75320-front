@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'scss/variables';
+
+/* fonts-icon */
+@import 'scss/fonts/fontawesome/scss/fontawesome';
+@import 'scss/fonts/feather/iconfont';
+
+@import 'scss/general';
+@import 'scss/generic';
+@import 'scss/mixins/function';
+
+/* important element */
+@import 'scss/menu/menu-lite';
+
+/* basic elements */
+@import 'scss/theme-elements/theme-elements';
+
+/* third party modules style*/
+@import 'scss/plugins/plugins';
+
+@import 'scss/custom';
+
+/* Ajusta el z-index del modal y su backdrop */
+.modal {
+  z-index: 1040 !important; /* Menor que el de SweetAlert2 */
+}
+
+.modal-backdrop {
+  z-index: 1030 !important; /* Menor que el modal */
+}
+
+/* Asegura que SweetAlert2 siempre esté al frente */
+.swal2-container {
+  z-index: 1060 !important; /* Mayor que el modal (1040) */
+}

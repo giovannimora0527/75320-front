@@ -1,0 +1,175 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true">
+  {{ msjSpinner }}...
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+          <button class="btn btn-outline-primary btn-sm" (click)="abrirCargarModal()" title="Cargar usuarios masivos">
+            <i class="fa fa-file"></i>
+            &nbsp;Cargar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table table-responsive">
+                <table class="table table-responsive table-stripped">
+                  <thead>
+                    <tr>
+                      <th>Nombre completo</th>
+                      <th>Correo</th>
+                      <th>Teléfono</th>
+                      <th>Fecha de registro</th>
+                      <th class="text-center">Estado</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="usuarios.length === 0">
+                    <tr>
+                      <td colspan="6" class="text-center">No hay registros disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="usuarios.length > 0">
+                    <tr *ngFor="let usuario of usuarios">
+                      <td>
+                        {{ usuario.nombre }}
+                      </td>
+                      <td>
+                        {{ usuario.correo }}
+                      </td>
+                      <td>
+                        {{ usuario.telefono }}
+                      </td>
+                      <td>
+                        {{ usuario.fechaRegistro | date: 'yyyy-MM-dd HH:mm' }}
+                      </td>
+                      <td class="text-center">
+                        <i *ngIf="usuario.activo" class="fa fa-check" style="color: green"></i>
+                        <i *ngIf="!usuario.activo" class="fa fa-times" style="color: red"></i>
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar usuario" (click)="abrirModoEdicion(usuario)">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal crear/actualizar usuario -->
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearUsuarioModalLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre completo"
+              [ngModel]="usuarioSelected?.nombre"
+            />
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre completo es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo</label>
+            <input
+              type="email"
+              formControlName="correo"
+              class="form-control"
+              id="correo"
+              placeholder="Ingrese el correo"
+              [ngModel]="usuarioSelected?.correo"
+            />
+            <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
+              El correo es requerido.
+            </div>
+            <div *ngIf="form.get('correo')?.hasError('email') && form.get('correo')?.touched" class="text-danger">
+              El formato del correo no es válido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input
+              type="text"
+              formControlName="telefono"
+              class="form-control"
+              id="telefono"
+              placeholder="Ingrese el teléfono"
+              [ngModel]="usuarioSelected?.telefono"
+            />
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+              El teléfono es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="activo" class="form-label">Estado</label>
+            <select class="form-control" formControlName="activo">
+              <option [value]="true">Activo</option>
+              <option [value]="false">Inactivo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cargar usuarios -->
+<div class="modal fade" id="cargarUsuarioModal" tabindex="-1" aria-labelledby="cargarUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cargarUsuarioModal">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body">
+            <!-- <div dnd-droppable (dndDrop)="onDrop($event)" class="drop-zone">Arrastra algo aquí</div>
+ -->
+            <<!-- div dnd-draggable [dragData]="{ name: 'Elemento 1' }" class="drag-item">Archivo aquí</div>
+           --></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">Cargar</button>
+      </div>
+    </div>
+  </div>
+</div>
