@@ -15,4 +15,16 @@ export class LibroService {
   getLibros(): Observable<Libro[]> {
     return this.backendService.get(environment.apiUrlAuth, this.api, 'listar');
   }
+
+    cargarLibrosDesdeCsv(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    return this.backendService.postFile(
+      environment.apiUrlAuth,
+      this.api,
+      'cargar-libros',
+      formData
+    );
+  }
 }

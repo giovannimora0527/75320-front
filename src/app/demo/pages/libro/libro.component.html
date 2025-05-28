@@ -8,6 +8,10 @@
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
           </button>
+          <!-- Botón para abrir el modal de carga CSV -->
+          <button class="btn btn-outline-primary" (click)="abrirModalCargaMasiva()">
+            <i class="fas fa-file-upload"></i> Cargar
+          </button>
         </div>
       </div>
     </div>
@@ -39,7 +43,7 @@
                             {{ libro.titulo }}
                           </td>
                           <td>
-                            {{ libro.idAutor }}
+                            {{ libro.nombreAutor }}
                           </td>
                           <td>
                             {{ libro.anioPublicacion }}
@@ -135,6 +139,56 @@
         <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
         <button type="button" class="btn btn-primary" >{{accion}}</button>
       </div>
+    </div>
+  </div>
+</div>
+<!-- Modal para carga masiva de libros -->
+<div class="modal fade" id="cargarLibrosCsvModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Carga masiva de libros</h5>
+        <button type="button" class="btn-close" (click)="modalCargaCsvInstance.hide()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="archivoLibros" class="form-label"></label>
+
+          <div class="input-group">
+            <label class="input-group-text btn btn-outline-secondary" for="archivoLibros">
+              Seleccionar archivo
+            </label>
+            <input
+              type="file"
+              class="form-control visually-hidden"
+              id="archivoLibros"
+              accept=".csv"
+              (change)="onArchivoSeleccionado($event)"
+            />
+            <input
+              type="text"
+              class="form-control"
+              [value]="archivo?.name || 'Ningún archivo seleccionado'"
+              disabled
+            />
+          </div>
+        </div>
+
+        <div *ngIf="erroresCsv.length > 0" class="alert alert-danger">
+          <strong>Errores encontrados:</strong>
+          <ul>
+            <li *ngFor="let error of erroresCsv">{{ error.mensaje }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalCargaCsvInstance.hide()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="cargarCsv()">Cargar</button>
+      </div>
+
     </div>
   </div>
 </div>

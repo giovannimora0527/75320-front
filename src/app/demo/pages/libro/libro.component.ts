@@ -6,6 +6,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { SpinnerService } from 'src/app/services/spinner.service';
 import { Libro } from 'src/app/models/libro';
 import { LibroService } from './service/libro.service';
+import { MessageUtils } from 'src/app/utils/message-utils';
 declare const bootstrap: any;
 
 @Component({
@@ -22,11 +23,14 @@ export class LibroComponent {
   accion: string = "";
   libroSelected: Libro;
   libros: Libro[] = [];
+  archivo: File | null = null;
+  erroresCsv: any[] = [];
+  modalCargaCsvInstance: any;
 
   form: FormGroup = new FormGroup({
     titulo: new FormControl(''),
     anioPublicacion: new FormControl(''),
-    autorId: new FormControl(''),
+    autor: new FormControl(''),
     categoria: new FormControl(''),
     existencias: new FormControl('')
   });
@@ -35,7 +39,8 @@ export class LibroComponent {
     private readonly spinner: NgxSpinnerService,
     private readonly spinnerService: SpinnerService,
     private formBuilder: FormBuilder,
-    private libroService: LibroService
+    private libroService: LibroService,
+    private messageUtils: MessageUtils
   ) {
     this.cargarFormulario();
     this.cargarLibros();
@@ -57,7 +62,7 @@ export class LibroComponent {
     this.form = this.formBuilder.group({
       titulo: ['', [Validators.required]],
       anioPublicacion: ['', [Validators.required]],
-      autorId: ['', [Validators.required]],
+      autor: ['', [Validators.required]],
       categoria: ['', [Validators.required]],
       existencias: ['', [Validators.required]]
     });
@@ -99,6 +104,103 @@ export class LibroComponent {
     }
     this.libroSelected = null;
   }
+
+  validarDelimitador(file: File): Promise<boolean> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const texto = reader.result as string;
+      const primeraLinea = texto.split('\n')[0];
+
+      const columnasPorComa = primeraLinea.split(',').length;
+      const columnasPorPuntoYComa = primeraLinea.split(';').length;
+
+      resolve(columnasPorComa >= columnasPorPuntoYComa);
+    };
+
+    reader.readAsText(file);
+  });
+}
+
+abrirModalCargaMasiva(): void {
+  this.archivo = null;
+  this.erroresCsv = [];
+
+  const modalElement = document.getElementById('cargarLibrosCsvModal'); // 👈 diferente ID
+  if (modalElement) {
+    this.modalCargaCsvInstance = new bootstrap.Modal(modalElement);
+    this.modalCargaCsvInstance.show();
+  }
+}
+
+onArchivoSeleccionado(event: any): void {
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files.length > 0) {
+    const archivoSeleccionado = input.files[0];
+
+    if (!archivoSeleccionado.name.toLowerCase().endsWith('.csv')) {
+      this.messageUtils.showMessage('Error', 'El archivo debe tener extensión .csv', 'error');
+      this.archivo = null;
+      input.value = '';
+      return;
+    }
+
+    if (archivoSeleccionado.size === 1) {
+      this.messageUtils.showMessage('Error', 'El archivo seleccionado está vacío', 'error');
+      this.archivo = null;
+      input.value = '';
+      return;
+    }
+
+    this.validarDelimitador(archivoSeleccionado).then((esValido) => {
+      if (!esValido) {
+        this.messageUtils.showMessage(
+          'Error',
+          'El archivo está delimitado por punto y coma (;) en lugar de coma (,)',
+          'error'
+        );
+        this.archivo = null;
+        input.value = '';
+        return;
+      }
+
+      this.archivo = archivoSeleccionado;
+      input.value = '';
+    });
+
+  } else {
+    this.archivo = null;
+  }
+}
+
+cargarCsv(): void {
+  if (!this.archivo) {
+    this.messageUtils.showMessage('Error', 'No has seleccionado nada, selecciona un archivo .csv', 'error');
+    return;
+  }
+
+  this.spinnerService.setSpinnerType('ball-clip-rotate');
+  this.spinner.show();
+
+  this.libroService.cargarLibrosDesdeCsv(this.archivo).subscribe({
+    next: (respuesta) => {
+      this.spinner.hide();
+      this.modalCargaCsvInstance.hide();
+      this.messageUtils.showMessage('Éxito', respuesta.message, 'success');
+      this.cargarLibros(); //recarga la tabla de libros en la interfaz de acuerdo al csv
+    },
+    error: (error) => {
+      this.spinner.hide();
+      if (Array.isArray(error.error)) {
+        this.erroresCsv = error.error;
+      } else {
+        this.messageUtils.showMessage('Error', 'Error inesperado', 'error');
+      }
+    }
+  });
+}
 }
 
 

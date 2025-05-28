@@ -81,9 +81,26 @@ export class BackendService {
     });
   }
 
-
-
+  
   postFile<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    data: FormData
+  ): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders({
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+  
+    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+      headers: headers,
+      withCredentials: true,
+    });
+  }
+
+
+  /*postFile<T>(
     urlApi: string,
     endpoint: string,
     service: string,
@@ -99,5 +116,5 @@ export class BackendService {
       headers: headers,
       withCredentials: true,
     });
-  }
+  }*/
 }

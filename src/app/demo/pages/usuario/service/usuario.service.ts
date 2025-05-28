@@ -33,4 +33,16 @@ export class UsuarioService {
     return this.backendService.post(environment.apiUrlAuth, 
       this.api, "actualizar-usuario", usuario);
   }
+
+  cargarUsuariosDesdeCsv(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    return this.backendService.postFile(
+      environment.apiUrlAuth,
+      this.api,
+      'cargar-usuarios',
+      formData
+    );
+  }
 }

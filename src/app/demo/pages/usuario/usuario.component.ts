@@ -33,6 +33,10 @@ export class UsuarioComponent {
   usuarioSelected: Usuario;
   accion: string = '';
   msjSpinner: string = 'Cargando';
+  archivo: File | null = null;
+  erroresCsv: any[] = [];
+  modalCargaCsvInstance: any;
+
 
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
@@ -168,6 +172,110 @@ export class UsuarioComponent {
       this.spinner.hide(); // Por si el formulario está inválido
     }
   }
+
+  validarDelimitador(file: File): Promise<boolean> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const texto = reader.result as string;
+        const primeraLinea = texto.split('\n')[0];
+
+        const columnasPorComa = primeraLinea.split(',').length;
+        const columnasPorPuntoYComa = primeraLinea.split(';').length;
+
+        // Retorna true si hay más columnas por coma que por punto y coma
+        resolve(columnasPorComa >= columnasPorPuntoYComa);
+      };
+
+      reader.readAsText(file);
+    });
+  }
+
+  abrirModalCargaMasiva(): void {
+    this.archivo = null;
+    this.erroresCsv = [];
+
+    const modalElement = document.getElementById('cargarUsuariosCsvModal');
+    if (modalElement) {
+      this.modalCargaCsvInstance = new bootstrap.Modal(modalElement);
+      this.modalCargaCsvInstance.show();
+    }
+  }
+  onArchivoSeleccionado(event: any): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      const archivoSeleccionado = input.files[0];
+
+      // Valida que sea archivo .csv
+      if (!archivoSeleccionado.name.toLowerCase().endsWith('.csv')) {
+        this.messageUtils.showMessage('Error', 'El archivo debe tener extensión .csv', 'error');
+        this.archivo = null;
+        input.value = ''; // Resetear input
+        return;
+      }
+
+      // Valida que no esté vacío el archivo
+      if (archivoSeleccionado.size === 1) {
+        this.messageUtils.showMessage('Error', 'El archivo seleccionado está vacío', 'error');
+        this.archivo = null;
+        input.value = ''; // Resetea el input
+        return;
+      }
+
+      this.validarDelimitador(archivoSeleccionado).then((esValido) => {
+        if (!esValido) {
+          this.messageUtils.showMessage(
+            'Error',
+            'El archivo está delimitado por punto y coma (;) en lugar de coma (,)',
+            'error'
+          );
+          this.archivo = null;
+          input.value = '';
+          return;
+        }
+
+        // Si pasa todas las validaciones, lo asigna
+        this.archivo = archivoSeleccionado;
+
+        // Resetea el input para permitir volver a subir el mismo archivo
+        input.value = '';
+
+      });
+      
+    } else {
+      this.archivo = null;
+    }
+  }
+
+  cargarCsv(): void {
+    if (!this.archivo) {
+      this.messageUtils.showMessage('Error', 'No has seleccionado nada, selecciona un archivo .csv', 'error');
+      return;
+    }
+
+    this.spinnerService.setSpinnerType('ball-clip-rotate');
+    this.spinner.show();
+
+    this.usuarioService.cargarUsuariosDesdeCsv(this.archivo).subscribe({
+      next: (respuesta) => {
+        this.spinner.hide();
+        this.modalCargaCsvInstance.hide();
+        this.messageUtils.showMessage('Éxito', respuesta.message, 'success');
+        this.cargarListaUsuarios(); // Recargar tabla
+      },
+      error: (error) => {
+        this.spinner.hide();
+        if (Array.isArray(error.error)) {
+          this.erroresCsv = error.error;
+        } else {
+          this.messageUtils.showMessage('Error', 'Error inesperado', 'error');
+        }
+      }
+    });
+  }
+
 }
 
 
