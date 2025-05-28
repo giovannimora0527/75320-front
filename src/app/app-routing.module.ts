@@ -5,6 +5,7 @@ import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AutorComponent } from './demo/pages/autor/autor.component';
 import { LibroComponent } from './demo/pages/libro/libro.component';
 import { PrestamoComponent } from './demo/pages/prestamo/prestamo.component';
+import { DeudaComponent } from './demo/pages/deuda/deuda.component';
 
 export const routes: Routes = [
   {
@@ -20,7 +21,8 @@ export const routes: Routes = [
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
       { path: 'autores', component: AutorComponent, data: { title: 'Autores' }} ,
       { path: 'libros', component: LibroComponent, data: { title: 'Libros' }}   ,
-      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }}      
+      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }},
+      { path: 'deudas', component: DeudaComponent, data: { title: 'Deuda' }},  
     ]
   },
   { path: '**', redirectTo: 'inicio' }

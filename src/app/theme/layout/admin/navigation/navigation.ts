@@ -52,7 +52,15 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/prestamos',
         icon: 'feather icon-book',
         classes: 'nav-item'
-      }
+      },
+      {
+        id: 'deuda',
+        title: 'Gestión de Deudas',
+        type: 'item',
+        url: '/inicio/deuda',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
     ]
   },
   /* ---------- Nuevos menus aqui -------------  */
