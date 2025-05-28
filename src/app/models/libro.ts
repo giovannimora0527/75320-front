@@ -1,8 +1,11 @@
+import { Autor } from "./autor";
+import { Categoria } from "./categoria";
+
 export class Libro {
-    idLibro!: number;
-    titulo!: string;
-    autorId!: number;
-    anioPublicacion?: Date;
-    categoria?: string;
-    existencias!: number;
+    idLibro: number;
+    titulo: string;
+    autor: Autor;
+    anioPublicacion?: number;
+    existencias: number;
+    categoria: Categoria;
 }

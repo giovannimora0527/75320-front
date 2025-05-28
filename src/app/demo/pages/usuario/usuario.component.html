@@ -1,5 +1,5 @@
-<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
-  {{msjSpinner}}...
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true">
+  {{ msjSpinner }}...
 </ngx-spinner>
 
 <div class="container">
@@ -7,9 +7,14 @@
     <div class="card-header">
       <div class="row">
         <div class="col">
-          <button class="btn btn-outline-primary" (click)="crearUsuarioModal('C')" title="Crear un usuario nuevo">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearUsuarioModal('C')"
+            title="Crear un usuario nuevo">
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
+          </button>
+          <button class="btn btn-outline-primary btn-sm" (click)="abrirCargarModal()" title="Cargar usuarios masivos">
+            <i class="fa fa-file"></i>
+            &nbsp;Cargar
           </button>
         </div>
       </div>
@@ -27,7 +32,7 @@
                       <th>Correo</th>
                       <th>Teléfono</th>
                       <th>Fecha de registro</th>
-                      <th>Estado</th>
+                      <th class="text-center">Estado</th>
                       <th class="text-center">Opciones</th>
                     </tr>
                   </thead>
@@ -48,16 +53,16 @@
                         {{ usuario.telefono }}
                       </td>
                       <td>
-                        {{ usuario.fechaRegistro }}
+                        {{ usuario.fechaRegistro | date: 'yyyy-MM-dd HH:mm' }}
                       </td>
-                      <td>
-                        {{ usuario.activo ? 'Si' : 'No' }}
+                      <td class="text-center">
+                        <i *ngIf="usuario.activo" class="fa fa-check" style="color: green"></i>
+                        <i *ngIf="!usuario.activo" class="fa fa-times" style="color: red"></i>
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar usuario"
                           (click)="abrirModoEdicion(usuario)">
                           <i class="fa fa-edit"></i>
-                          &nbsp;Editar
                         </button>
                       </td>
                     </tr>
@@ -71,14 +76,13 @@
     </div>
   </div>
 </div>
-
-<!-- Modal crear/actualizar usuarios -->
+<!-- Modal crear/actualizar usuario -->
 <div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel"
-  data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-md">
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="crearUsuarioModalLabel">{{accion}}</h5>
+        <h5 class="modal-title" id="crearUsuarioModalLabel">{{ titleModal }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -116,7 +120,7 @@
 
           <div class="mb-3" *ngIf="modoFormulario === 'E'">
             <label for="activo" class="form-label">Estado</label>
-            <select class="form-select" formControlName="activo">
+            <select class="form-control" formControlName="activo">
               <option [value]="true">Activo</option>
               <option [value]="false">Inactivo</option>
             </select>
@@ -125,7 +129,40 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">{{accion}}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cargar usuarios -->
+<div class="modal fade" id="cargarUsuarioModal" tabindex="-1" aria-labelledby="cargarUsuarioModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cargarUsuarioModalLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="archivoUsuarios" class="form-label">Seleccionar archivo CSV</label>
+              <input type="file" class="form-control" id="archivoUsuarios" (change)="onFileChange($event)"
+                accept=".csv" />
+              <div class="form-text">Seleccione un archivo CSV con los usuarios a cargar</div>
+            </div>
+            <div *ngIf="archivoCsv" class="alert alert-info mt-3">
+              Archivo seleccionado: {{ archivoCsv.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="cargarUsuariosDesdeCsv()"
+          [disabled]="!archivoCsv">Cargar</button>
       </div>
     </div>
   </div>

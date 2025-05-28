@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class BackendService {
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   construirHeader() {
     // Aqui obtenemos el token desde el local storage
@@ -96,6 +96,24 @@ export class BackendService {
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
     return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+      headers: headers,
+      withCredentials: true,
+    });
+  }
+
+  postFormData<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    formData: FormData
+  ): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders({
+      // No establecemos 'Content-Type' aquí, el navegador lo hará
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+
+    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, formData, {
       headers: headers,
       withCredentials: true,
     });

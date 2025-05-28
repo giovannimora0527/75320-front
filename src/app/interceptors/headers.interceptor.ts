@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpContext, HttpContextToken, HttpHeaders } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 
 
 @Injectable()
@@ -15,8 +16,7 @@ export class HeadersInterceptor implements HttpInterceptor {
         'Content-Type': 'application/json',
       },
     });
-    const hasContentType = clonedRequest.headers.has('Content-Type');
-
+   
     return next.handle(clonedRequest);
   }
 

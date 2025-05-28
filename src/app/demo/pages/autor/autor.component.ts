@@ -1,141 +1,217 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormGroup,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators
-} from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { Autor } from 'src/app/models/autor';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
+import { MessageUtils } from 'src/app/utils/message-utils';
 import { AutorService } from './service/autor.service';
+import { Autor } from 'src/app/models/autor';
+import { Nacionalidad } from 'src/app/models/nacionalidad';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { DndDropEvent, DndModule } from 'ngx-drag-drop';
+import { Observable } from 'rxjs';
+
 declare const bootstrap: any;
 
 @Component({
   selector: 'app-autor',
   standalone: true,
-  imports: [CommonModule, NgxSpinnerModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIf, NgFor, NgxSpinnerModule, DndModule],
   templateUrl: './autor.component.html',
   styleUrl: './autor.component.scss'
 })
 export class AutorComponent {
-  msjSpinner: string = '';
+  autores: Autor[] = [];
+  nacionalidades: Nacionalidad[] = [];
   modalInstance: any;
   modoFormulario: string = '';
-  accion: string = '';
-  autorSelected: Autor;
-  autores: Autor[] = [];
+  titleModal: string = '';
+  autorSelected: Autor | null = null;
+  msjSpinner: string = "";
+  archivoCsv: File | null = null;
 
-  form: FormGroup = new FormGroup({
-    nombre: new FormControl(''),
-    nacionalidad: new FormControl(''),
-    fechaNacimiento: new FormControl('')
-  });
+  form: FormGroup;
 
   constructor(
-    private readonly spinner: NgxSpinnerService,
-    private formBuilder: FormBuilder,
-    private AutorService: AutorService
+    private readonly messageUtils: MessageUtils,
+    private readonly autorService: AutorService,
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
-    this.cargarFormulario();
-    this.cargarAutores();
+    this.form = this.formBuilder.group({
+      nombre: ['', [Validators.required]],
+      fechaNacimiento: ['', [Validators.required]],
+      nacionalidadId: ['', [Validators.required]]
+    });
+    this.cargarListaAutores();
+    this.cargarNacionalidades();
   }
 
-  cargarAutores() {
-    this.msjSpinner = 'Cargando autores...';
-    this.spinner.show();
-    this.AutorService.getAutores().subscribe({
+  cargarNacionalidades() {
+    this.autorService.getNacionalidades().subscribe({
       next: (data) => {
-        this.autores = data;
-        this.spinner.hide();
+        this.nacionalidades = data;
       },
       error: (error) => {
         console.log(error);
-        this.spinner.hide();
+        this.showMessage("Error", "No se pudieron cargar las nacionalidades", "error");
       }
     });
   }
 
-  cargarFormulario() {
-    this.form = this.formBuilder.group({
-      nombre: ['', [Validators.required]],
-      nacionalidad: ['', [Validators.required]],
-      fechaNacimiento: ['', [Validators.required]]
+  cargarListaAutores() {
+    this.autorService.getAutores().subscribe({
+      next: (data) => {
+        this.autores = data;
+      },
+      error: (error) => {
+        Swal.fire('Error', error.error.message, 'error');
+      }
     });
   }
 
   crearAutorModal(modoForm: string) {
     this.modoFormulario = modoForm;
-    this.accion = modoForm === 'C' ? 'Crear Autor' : 'Actualizar Autor';
+    this.titleModal = modoForm == 'C' ? 'Crear Autor' : 'Editar Autor';
     const modalElement = document.getElementById('crearAutorModal');
     if (modalElement) {
-      if (!this.modalInstance) {
-        this.modalInstance = new bootstrap.Modal(modalElement);
-      }
+      this.modalInstance ??= new bootstrap.Modal(modalElement);
       this.modalInstance.show();
+    }
+    if (modoForm === 'C') {
+      this.form.reset();
+      this.autorSelected = null;
     }
   }
 
-  abrirModoEdicion(autor: Autor) {
-    this.autorSelected = autor;
-    this.form.patchValue(autor);
-    this.crearAutorModal('E');
+  abrirCargarModal() {
+    this.titleModal = "Cargar Autores";
+    const modalElement = document.getElementById('cargarAutorModal');
+    if (modalElement) {
+      this.modalInstance ??= new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
   }
 
   cerrarModal() {
     this.form.reset();
     this.form.markAsPristine();
     this.form.markAsUntouched();
-    this.form.reset({
-      nombre: '',
-      nacionalidad: '',
-      fechaNacimiento: ''
-    });
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
     this.autorSelected = null;
+    this.archivoCsv = null;
   }
 
-  guardarActualizarAutor() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+  abrirModoEdicion(autor: Autor) {
+    this.crearAutorModal('E');
+    this.autorSelected = autor;
+    this.form.patchValue({
+      nombre: autor.nombre,
+      fechaNacimiento: this.formatDateForInput(autor.fechaNacimiento),
+      nacionalidadId: autor.nacionalidad?.nacionalidadId ?? null
+    });
+  }
 
-    const autor: Autor = {
-      ...this.autorSelected,
-      ...this.form.value
-    };
+  private formatDateForInput(date: string | Date): string {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+  }
 
-    this.spinner.show();
-    if (this.modoFormulario === 'C') {
-      this.AutorService.crearAutor(autor).subscribe({
-        next: () => {
-          this.cargarAutores();
+  guardarAutor() {
+    if (this.form.valid) {
+      const nacionalidadSeleccionada = this.nacionalidades.find(
+        n => n.nacionalidadId === this.form.get('nacionalidadId')?.value
+      );
+
+      const autorData: Autor = {
+        autorId: this.modoFormulario === 'E' ? this.autorSelected?.autorId : undefined,
+        nombre: this.form.get('nombre')?.value,
+        fechaNacimiento: this.form.get('fechaNacimiento')?.value,
+        nacionalidad: nacionalidadSeleccionada
+      };
+
+      this.msjSpinner = this.modoFormulario === 'C' ? 'Creando Autor' : 'Actualizando Autor';
+      this.spinner.show();
+
+      const request: Observable<any> = this.modoFormulario === 'C'
+        ? this.autorService.guardarAutor(autorData)
+        : this.autorService.actualizarAutor(autorData);
+
+      request.subscribe({
+        next: (data) => {
+          this.spinner.hide();
           this.cerrarModal();
-          this.spinner.hide();
+          this.cargarListaAutores();
+          this.messageUtils.showMessage("Éxito", data.message, "success");
         },
-        error: (err) => {
-          console.error('Error al crear autor', err);
+        error: (error) => {
           this.spinner.hide();
+          this.messageUtils.showMessage("Error", error.error.message, "error");
         }
       });
     } else {
-      this.AutorService.actualizarAutor(autor).subscribe({
-        next: () => {
-          this.cargarAutores();
-          this.cerrarModal();
-          this.spinner.hide();
-        },
-        error: (err) => {
-          console.error('Error al actualizar autor', err);
-          this.spinner.hide();
-        }
-      });
+      this.messageUtils.showMessage("Advertencia", "El formulario no es válido", "warning");
     }
+  }
+
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input?.files?.length) {
+      this.archivoCsv = input.files[0];
+    }
+  }
+
+  cargarAutoresDesdeCsv(): void {
+    if (!this.archivoCsv) {
+      this.messageUtils.showMessage('Error', 'Debe seleccionar un archivo CSV.', 'error');
+      return;
+    }
+
+    this.msjSpinner = "Cargando autores desde CSV...";
+    this.spinner.show();
+
+    this.autorService.cargarAutoresCsv(this.archivoCsv).subscribe({
+      next: (data) => {
+        this.spinner.hide();
+        this.messageUtils.showMessage('Éxito', data.message, 'success');
+        this.cargarListaAutores();
+        this.cerrarModal();
+        this.archivoCsv = null;
+      },
+      error: (error) => {
+        this.spinner.hide();
+        this.messageUtils.showMessage('Error', error.error.message || 'Ocurrió un error al cargar el archivo.', 'error');
+        this.archivoCsv = null;
+      }
+    });
+  }
+
+  public showMessage(title: string, text: string, icon: SweetAlertIcon) {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        container: 'position-fixed',
+        popup: 'swal-overlay'
+      },
+      didOpen: () => {
+        const swalPopup = document.querySelector('.swal2-popup');
+        if (swalPopup) {
+          (swalPopup as HTMLElement).style.zIndex = '1060';
+        }
+      }
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  onDrop(event: DndDropEvent): void {
+    console.log('Item dropped:', event);
   }
 }

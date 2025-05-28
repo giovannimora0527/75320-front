@@ -1,6 +1,5 @@
 .swal-overlay {
-  z-index: 1060 !important;
-  /* Mayor que el modal Bootstrap (1050) */
+  z-index: 1060 !important; /* Mayor que el modal Bootstrap (1050) */
 }
 
 #crearUsuarioModal.modal {
